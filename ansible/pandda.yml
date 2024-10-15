@@ -1,0 +1,7 @@
+---
+- hosts: metering_point
+  become: yes
+  roles:
+    - common_tools
+    - ipfixprobe_dpdk
+    - metering_point
