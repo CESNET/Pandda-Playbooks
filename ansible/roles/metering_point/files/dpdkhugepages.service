@@ -1,0 +1,13 @@
+[Unit]
+Description=DPDK hugepages setup
+Wants=local-fs.target
+Before=ipfixprobe@.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/metering-point/bin/dpdkhugepages_setup.sh start
+ExecStop=/opt/metering-point/bin/dpdkhugepages_setup.sh stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

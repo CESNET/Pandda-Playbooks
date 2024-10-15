@@ -1,0 +1,66 @@
+---
+- name: Created metering-point bin directory
+  file:
+    path: /opt/metering-point/bin
+    recurse: yes
+    state: directory
+
+- name: Copy Ipfixprobe configuration
+  copy:
+    src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/ipfixprobe/"
+    dest: /etc/ipfixprobe/
+
+- name: Copy hugepages configuration
+  copy:
+    src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/hugepages/"
+    dest: /etc/ipfixprobe/
+
+- name: DPDK hugepages script is installed
+  copy:
+    src: dpdkhugepages_setup.sh
+    dest: /opt/metering-point/bin/dpdkhugepages_setup.sh
+    mode: "0755"
+
+- name: DPDK hugepages service is configured 
+  copy:
+    src: dpdkhugepages.service
+    dest: /usr/lib/systemd/system/dpdkhugepages.service
+
+- name: Detect ipfixprobe instances
+  shell: |
+    for i in /etc/ipfixprobe/*_*.conf; do
+      if [ -e "$i" ]; then
+        instance="${i#*_}";
+        echo "${instance%.conf}";
+      fi
+    done
+  register: ipfixprobe_instances
+  ignore_errors: true
+
+- name: Stop ipfixprobe instances
+  systemd:
+    name: "ipfixprobe@instance_{{item}}.service"
+    enabled: yes
+    state: stopped
+  loop: "{{ipfixprobe_instances.stdout_lines}}"
+
+- name: Detected ipfixprobe instances
+  ansible.builtin.debug:
+    var: ipfixprobe_instances
+
+- name: Reload systemd service
+  systemd:
+    daemon_reload: yes
+
+- name: Restart DPDK hugepages service
+  systemd:
+    name: dpdkhugepages.service
+    state: restarted
+    enabled: true
+
+- name: Start ipfixprobe instances
+  systemd:
+    name: "ipfixprobe@instance_{{item}}.service"
+    enabled: yes
+    state: started
+  loop: "{{ipfixprobe_instances.stdout_lines}}"
