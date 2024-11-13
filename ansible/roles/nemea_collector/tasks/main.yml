@@ -1,0 +1,40 @@
+---
+- name: NEMEA packages are installed
+  dnf:
+    name:
+      - telemetry
+      - nemea-modules
+      - nemea-detectors
+      - nemea-modules-ng
+      - ipfixcol2-unirec-output
+    state: present
+  tags: install
+
+- name: UNIREC output plugin to IPFIXcol2 is installed
+  blockinfile:
+    path: /etc/ipfixcol2/ipfixcol2-startup.xml
+    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK (NEMEA UNIREC OUTPUT) -->"
+    insertbefore: "</outputPlugins>"
+    backup: yes
+    content: "{{ lookup('ansible.builtin.file', inventory_dir + '/group_files/' + group_names[0] + '/nemea/ipfixcol2-unirec.xml') }}"
+  tags:
+    - install
+    - configure
+
+- name: FUSE configuration for telemetry is installed
+  copy:
+    src: "fuse.conf"
+    dest: "/etc/fuse.conf"
+    mode: 0755
+  tags:
+    - install
+    - configure
+
+- name: Directory for telemetry is created
+  file:
+    path: /var/stats
+    state: directory
+    mode: 0777
+  tags:
+    - install
+    - configure
