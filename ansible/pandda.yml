@@ -5,3 +5,9 @@
     - common_tools
     - ipfixprobe_dpdk
     - metering_point
+
+- hosts: collector
+  become: yes
+  roles:
+    - common_tools
+    - nemea_collector
