@@ -1,0 +1,77 @@
+---
+- name: IPFIXcol2 package is installed
+  dnf:
+    name:
+      - ipfixcol2
+    state: present
+  tags: install
+
+- name: IPFIXcol2 configuration directory is created
+  file:
+    path: /etc/ipfixcol2
+    state: directory
+  tags:
+    - install
+    - configure
+
+- name: IPFIXcol2 configuration file is copied
+  copy:
+    src: "ipfixcol2-startup.xml"
+    dest: /etc/ipfixcol2/ipfixcol2-startup.xml
+  tags:
+    - install
+    - configure
+
+- name: supervisord configuration file for IPFIXcol2 is copied
+  copy:
+    src: "supervisor-ipfixcol2.ini"
+    dest: /etc/supervisord.d/configs/supervisor-ipfixcol2.ini
+  tags:
+    - install
+    - configure
+
+- name: IPFIXcol2 in supervisor is enabled
+  command: "supen -n ipfixcol2 -g datasource"
+  tags: 
+    - configure
+
+- name: Changes in supervisor are applied
+  command: "{{ item }}"
+  loop:
+    - "supervisorctl reread"
+    - "supervisorctl update"
+    - "supervisorctl start datasource:"
+  tags:
+    - install
+    - configure
+
+- name: Firewalld status is checked
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+  ignore_errors: true
+  register: firewalld_status
+
+- name: Firewall port for IPFIXcol2 using firewalld is enabled
+  ansible.builtin.firewalld:
+    port: 4739/tcp
+    permanent: yes
+    immediate: yes
+    state: enabled
+  when: firewalld_status is succeeded and firewalld_status.state == "started"
+
+- name: Firewalld is reloaded
+  ansible.builtin.command: firewall-cmd --reload
+  when: firewalld_status is succeeded and firewalld_status.state == "started"
+
+- name: Firewall port for IPFIXcol2 using iptables is enabled
+  ansible.builtin.command: >
+    iptables -I INPUT -p tcp --dport 4739 -j ACCEPT
+  when: firewalld_status is failed or firewalld_status.state != "started"
+
+- name: Iptables configuration is saved
+  ansible.builtin.shell: iptables-save > /etc/sysconfig/iptables
+  when: firewalld_status is failed or firewalld_status.state != "started"
+
+
