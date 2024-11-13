@@ -1,13 +1,13 @@
 ---
-- name: IPFIXCol repository is installed
+- name: IPFIXColpfixcol repository is installed
   ansible.builtin.yum_repository:
     name: copr:copr.fedorainfracloud.org:group_CESNET:IPFIXcol
     description: Copr repo for IPFIXcol owned by @CESNET
     baseurl: "{{ url }}/epel-{{ ansible_distribution_major_version }}-$basearch/"
-    skip_if_unavailable: yes
-    gpgcheck: yes
+    skip_if_unavailable: true
+    gpgcheck: true
     gpgkey: "{{ url }}/pubkey.gpg"
-    repo_gpgcheck: no
-    enabled: yes
+    repo_gpgcheck: false
+    enabled: true
   vars:
     url: https://download.copr.fedorainfracloud.org/results/@CESNET//IPFIXcol/

@@ -2,24 +2,24 @@
 - name: Sudo is installed
   ansible.builtin.dnf:
     name: sudo
-    state: latest
+    state: latest # noqa package-latest
 
 - name: Htop is installed
   ansible.builtin.dnf:
     name: htop
-    state: latest
+    state: latest # noqa package-latest
 
 - name: Vim is installed
   ansible.builtin.dnf:
     name: vim
-    state: latest
+    state: latest # noqa package-latest
 
 - name: Git is installed
   ansible.builtin.dnf:
     name: git
-    state: latest
+    state: latest # noqa package-latest
 
 - name: Net-tools is installed
   ansible.builtin.dnf:
     name: net-tools
-    state: latest
+    state: latest # noqa package-latest

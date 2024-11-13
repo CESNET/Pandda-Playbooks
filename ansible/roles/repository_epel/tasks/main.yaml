@@ -2,4 +2,4 @@
 - name: EPEL repository is installed
   ansible.builtin.dnf:
     name: epel-release
-    state: latest
+    state: latest # noqa package-latest
