@@ -36,7 +36,7 @@
 - name: IPFIXcol2 in supervisor is enabled
   ansible.builtin.command: "supen -n ipfixcol2 -g datasource"
   changed_when: true
-  tags: 
+  tags:
     - configure
 
 - name: Changes in supervisor are applied
@@ -81,5 +81,3 @@
   ansible.builtin.shell: iptables-save > /etc/sysconfig/iptables
   changed_when: true
   when: firewalld_status is failed or firewalld_status.state != "started"
-
-
