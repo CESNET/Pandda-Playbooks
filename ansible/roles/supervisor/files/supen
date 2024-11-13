@@ -1,0 +1,134 @@
+#!/bin/python3
+# Author: Karel Hynek
+# Date: 13. 03. 2024
+# Description: This script is used to enable a program or a directory of programs in supervisor
+# Email: hynekkar@cesnet.cz
+# (C) CESNET 2024
+
+import os
+import glob
+import configparser
+import argparse
+
+def create_dir_if_not_exists(dir):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
+def create_symbolic_link(src, dst):
+    if not os.path.exists(dst):
+        os.symlink(src, dst)
+
+def create_file_if_not_exists(file):
+    if not os.path.exists(file):
+        open(file, 'w').close()
+
+def remove_file_if_exists(file):
+    if os.path.exists(file):
+        os.remove(file)
+
+def remove_dir_if_exists(dir):
+    if os.path.exists(dir):
+        os.rmdir(dir)
+
+def add_program_to_group(group_name, config_file, program_name):
+    cp = configparser.ConfigParser(inline_comment_prefixes=('#', ';'))
+    with open(config_file, "r") as f:
+        cp.read_file(f)
+   
+    if "group:"+group_name not in cp.sections() and len(cp.sections()) > 0:
+        print("Group with name " + group_name + " not found in the config file")
+        exit(1)
+
+    if len(cp.sections()) == 0:
+        cp.add_section("group:"+group_name)
+    
+    programs = []
+    if "programs" in cp["group:"+group_name]:
+        programs = cp.get("group:"+group_name, "programs").replace("\n","").split(",")
+
+    programs.append(program_name)
+    cp.set("group:"+group_name, "programs", ",\n".join(programs))
+
+    with open(config_file, "w") as f:
+        cp.write(f)
+
+
+def enabled(program_name, group_name, enable_dir):
+    if os.path.exists(enable_dir+"/"+group_name+"/"+program_name+".ini"):
+        return True
+    return False
+
+def handle_program(program_name, group_name, config_dir, enable_dir):
+    if enabled(program_name, group_name, enable_dir):
+        print("Program " + program_name + " already enabled in group " + group_name)
+        return
+    print("enabling program: " + program_name)
+
+    cp = configparser.ConfigParser(inline_comment_prefixes=('#', ';'))
+    config_file_name = ""
+    for filename in glob.glob(config_dir + '/**/*.ini', recursive=True):
+        cp.read_file(open(filename))
+        if "program:"+ program_name not in cp.sections():
+            continue
+        config_file_name = filename
+        break
+    if config_file_name == "":
+        print("Program with name " + program_name + " not found in the config directory")
+        exit(1)
+    
+    create_dir_if_not_exists(enable_dir+"/"+group_name)
+    create_file_if_not_exists(enable_dir+"/"+group_name+"/"+group_name+".ini")
+    create_symbolic_link(config_file_name, enable_dir+"/"+group_name+"/"+program_name+".ini")
+    add_program_to_group(group_name, enable_dir+"/"+group_name+"/"+group_name+".ini", program_name)
+
+def handle_directory(directory_name, group_name, config_dir, enable_dir):
+    if config_dir not in directory_name:
+        directory_name = config_dir + "/" + directory_name
+    processed_files = 0;
+    for filename in glob.glob(directory_name + '/**/*.ini', recursive=True):
+        processed_files = processed_files + 1
+        cp = configparser.ConfigParser(inline_comment_prefixes=('#', ';'))
+        cp.read_file(open(filename))
+        for section in cp.sections():
+            if section.startswith("program:"):
+                program_name = section.split(":")[1]
+                handle_program(program_name, group_name, config_dir, enable_dir)
+    if processed_files == 0:
+        print("No *.ini files found in the directory + " + directory_name)
+        exit(1)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Supervisor Config Enabler')
+    parser.add_argument('-n','--program-name', type=str, 
+                        help='Name of the program specified in the ini file')
+
+    parser.add_argument('-d', '--directory-name', type=str,
+                        help='Name of the directory with configs to enable')
+
+    parser.add_argument('-g', '--group-name', type=str, required=True,
+                        help='Name of the group')
+
+    parser.add_argument('-c', '--config-dir', type=str, default='/etc/supervisord.d/configs',
+                        help='Path to the supervisor config directory')
+
+    parser.add_argument('-e', '--enable-dir', type=str, default='/etc/supervisord.d/enabled',
+                        help='Path to the supervisor enabled directory')
+
+    args = parser.parse_args()
+
+
+    #check args validity
+    if args.program_name != None and args.directory_name != None:
+        print("Please specify either a program name or a directory name, not both.")
+        exit(1)
+
+    if args.program_name != None:
+        handle_program(args.program_name, args.group_name, args.config_dir, args.enable_dir)
+
+    if args.directory_name != None:
+        handle_directory(args.directory_name, args.group_name, args.config_dir, args.enable_dir)
+
+    print("The configuration has been succesffully enabled. Please reload supervisord to apply changes.")
+
+    exit(0)
+
