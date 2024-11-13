@@ -1,13 +1,13 @@
 ---
 - hosts: metering_point
-  become: yes
+  become: true
   roles:
     - common_tools
     - ipfixprobe_dpdk
     - metering_point
 
 - hosts: collector
-  become: yes
+  become: true
   roles:
     - common_tools
     - nemea_collector

@@ -49,15 +49,15 @@
   ansible.builtin.systemd:
     name: firewalld
     state: started
-    enabled: yes
+    enabled: true
   ignore_errors: true
   register: firewalld_status
 
 - name: Firewall port for IPFIXcol2 using firewalld is enabled
   ansible.posix.firewalld:
     port: 4739/tcp
-    permanent: yes
-    immediate: yes
+    permanent: true
+    immediate: true
     state: enabled
   when: firewalld_status is succeeded and firewalld_status.state == "started"
 

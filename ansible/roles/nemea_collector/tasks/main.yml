@@ -15,7 +15,7 @@
     path: /etc/ipfixcol2/ipfixcol2-startup.xml
     marker: "<!-- {mark} ANSIBLE MANAGED BLOCK (NEMEA UNIREC OUTPUT) -->"
     insertbefore: "</outputPlugins>"
-    backup: yes
+    backup: true
     content: "{{ lookup('ansible.builtin.file', inventory_dir + '/group_files/' + group_names[0] + '/nemea/ipfixcol2-unirec.xml') }}"
   tags:
     - install
