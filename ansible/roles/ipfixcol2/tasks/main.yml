@@ -10,6 +10,7 @@
   ansible.builtin.file:
     path: /etc/ipfixcol2
     state: directory
+    mode: "0755"
   tags:
     - install
     - configure
@@ -18,6 +19,7 @@
   ansible.builtin.copy:
     src: "ipfixcol2-startup.xml"
     dest: /etc/ipfixcol2/ipfixcol2-startup.xml
+    mode: "0755"
   tags:
     - install
     - configure
@@ -26,6 +28,7 @@
   ansible.builtin.copy:
     src: "supervisor-ipfixcol2.ini"
     dest: /etc/supervisord.d/configs/supervisor-ipfixcol2.ini
+    mode: "0755"
   tags:
     - install
     - configure

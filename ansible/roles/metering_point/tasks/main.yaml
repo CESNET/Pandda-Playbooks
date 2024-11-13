@@ -9,11 +9,13 @@
   ansible.builtin.copy:
     src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/ipfixprobe/"
     dest: /etc/ipfixprobe/
+    mode: "0755"
 
 - name: Copy hugepages configuration
   ansible.builtin.copy:
     src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/hugepages/"
     dest: /etc/ipfixprobe/
+    mode: "0755"
 
 - name: DPDK hugepages script is installed
   ansible.builtin.copy:
@@ -25,6 +27,7 @@
   ansible.builtin.copy:
     src: dpdkhugepages.service
     dest: /usr/lib/systemd/system/dpdkhugepages.service
+    mode: "0755"
 
 - name: Detect ipfixprobe instances
   ansible.builtin.shell: |
