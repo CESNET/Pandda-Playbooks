@@ -1,0 +1,87 @@
+---
+- name: Supervisor is installed
+  dnf:
+    name: supervisor
+    state: present
+  tags:
+    - install
+    - configure
+
+- name: Supervisord service is started
+  systemd:
+    name: supervisord
+    state: started
+    enabled: yes
+  tags:
+    - install
+    - configure
+
+- name: Configuration directory structure for supervisor is created
+  file:
+    path: "{{ item.dir }}"
+    state: "{{ item.type }}"
+  loop:
+    - { dir: "/etc/supervisord.d", type: directory }
+    - { dir: "/etc/supervisord.d/enabled", type: directory }
+    - { dir: "/etc/supervisord.d/configs", type: directory }
+  tags:
+    - install
+    - konfigurace
+
+- name: Supervisor user is created
+  user:
+    name: supervisor
+    system: yes
+    shell: /sbin/nologin
+  tags:
+    - install
+    - configure
+
+
+- name: Supervisord configuration directory is set
+  lineinfile:
+    path: /etc/supervisord.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: 'files =', line: 'files = supervisord.d/enabled/*.ini supervisord.d/enabled/*/*.ini supervisord.d/enabled/*/*/*.ini' }
+  tags:
+    - install
+
+- name: Supervisord enable macro is copied
+  copy:
+    src: supen
+    dest: /usr/bin/supen
+    mode: 0755
+  tags:
+    - install
+
+- name: Supervisord disable macro is copied
+  copy:
+    src: supdis
+    dest: /usr/bin/supdis
+    mode: 0755
+  tags:
+    - install
+
+- name: Log directory for supervisord is created
+  file:
+    path: /var/log/supervisord_modules
+    state: directory
+    mode: 0777
+  tags:
+    - install
+    - configure
+
+- name: Log directory for supervisord is set
+  lineinfile:
+    path: /etc/supervisord.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: ';childlogdir=/tmp', line: 'childlogdir=/var/log/supervisord_modules            ; ("AUTO" child log dir, default $TEMP)' }
+  tags:
+    - install
+
+
+

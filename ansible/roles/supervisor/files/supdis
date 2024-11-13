@@ -1,0 +1,145 @@
+#!/usr/bin/python3
+# Author: Karel Hynek
+# Date: 13. 03. 2024
+# Description: This script is used to disable a program or a directory of programs in supervisor
+# Email: hynekkar@cesnet.cz
+# (C) CESNET 2024
+
+import os
+import glob
+import configparser
+import argparse
+import shutil
+
+def enabled(program_name, group_name, enable_dir):
+    if os.path.exists(enable_dir+"/"+group_name+"/"+program_name+".ini"):
+        return True
+    return False
+
+def remove_dir_if_exists(dir):
+    if os.path.exists(dir):
+        #remove even non empty directory
+        shutil.rmtree(dir)
+
+def remove_file_if_exists(file):
+    #remove even non empty directory
+    if os.path.exists(file):
+        os.remove(file)
+
+def remove_from_group(group_name, program_name, config_file):
+    cp = configparser.ConfigParser(inline_comment_prefixes=('#', ';'))
+    with open(config_file, "r") as f:
+        cp.read_file(f)
+    
+    if "group:"+group_name not in cp.sections() and len(cp.sections()) > 0:
+        print("Group with name " + group_name + " not found in the config file")
+        exit(1)
+
+    if len(cp.sections()) == 0:
+        print("No groups found in the config file")
+        exit(1)
+    
+    if "programs" not in cp["group:"+group_name]:
+        print("No programs found in the group " + group_name)
+        exit(1)
+
+    programs = cp.get("group:"+group_name, "programs").replace("\n","").split(",")
+    if program_name not in programs:
+        print("Program with name " + program_name + " not found in the group " + group_name)
+        exit(1)
+
+    programs.remove(program_name)
+
+    if len(programs) == 0:
+        remove_dir_if_exists(config_file.replace(config_file.split("/")[-1], ""))
+        print("Group " + group_name + " has no programs left. Removing group from config directory.")
+        exit(0)
+
+    cp.set("group:"+group_name, "programs", ",\n".join(programs))
+
+    with open(config_file, "w") as f:
+        cp.write(f)
+
+def get_group_name(program_name, enable_dir):
+    cp = configparser.ConfigParser(inline_comment_prefixes=('#', ';'))
+    config_file_name = ""
+    for filename in glob.glob(enable_dir + '/**/*.ini', recursive=True):
+        cp.read_file(open(filename))
+        if "program:"+ program_name not in cp.sections():
+            continue
+        config_file_name = filename
+        break
+    if config_file_name == "":
+        print("Program with name " + program_name + " not found in the enable directory. Is it enabled?")
+        exit(1)
+    
+    
+    for section in cp.sections():
+        if "group:" in section:
+            if "programs" in cp[section]:
+                if program_name in cp[section]["programs"]:
+                    return section.replace("group:", "")
+    print("Program with name " + program_name + " not found in any group")
+    exit(1)
+
+def handle_program(program_name, enable_dir, group_name = None):
+    if group_name == None:
+        group_name = get_group_name(program_name, enable_dir)
+
+    cp = configparser.ConfigParser(inline_comment_prefixes=('#', ';'))
+    config_file_name = ""
+    for filename in glob.glob(enable_dir + '/'+group_name+'/*.ini', recursive=True):
+        cp.read_file(open(filename))
+        if "program:"+ program_name not in cp.sections():
+            continue
+        config_file_name = filename
+        break
+    if config_file_name == "":
+        print("Program with name " + program_name + " not found in the enable directory. Is it enabled???")
+        exit(0)
+    print("Disabling program: " + program_name + " in group: " + group_name)
+    remove_from_group(group_name, program_name, enable_dir+"/"+group_name+"/"+group_name+".ini")
+    remove_file_if_exists(config_file_name)
+
+
+def handle_group(group_name, enable_dir):
+    directory_name = group_name
+    if enable_dir not in group_name:
+        directory_name = enable_dir + "/" + group_name
+    else:
+        group_name = group_name.replace(enable_dir + "/", "")
+    program_cnt = 0;
+    for filename in glob.glob(directory_name + '/**/*.ini', recursive=True):
+        program_cnt = program_cnt + 1
+        cp = configparser.ConfigParser(inline_comment_prefixes=('#', ';'))
+        cp.read_file(open(filename))
+        for section in cp.sections():
+            if "program:" in section:
+                handle_program(section.replace("program:", ""), enable_dir, group_name)
+
+    if program_cnt == 0:
+        print("No programs found in the group " + group_name)
+        exit(1)
+
+parser = argparse.ArgumentParser(description='Supervisor Config Disabler')
+parser.add_argument('-n','--program-name', type=str, 
+                    help='Name of the program specified in the ini file')
+
+parser.add_argument('-g', '--group-name', type=str,
+                    help='Name of the group with configs to disable')
+
+parser.add_argument('-e', '--enable-dir', type=str, default='/etc/supervisord.d/enabled',
+                    help='Path to the supervisor enabled directory')
+
+args = parser.parse_args()
+
+
+if args.program_name == None and args.group_name == None:
+    print("Please specify either a program name or a group name.")
+    exit(1)
+
+if args.program_name != None:
+    handle_program(args.program_name, args.enable_dir, args.group_name)
+
+if args.group_name != None:
+    handle_group(args.group_name, args.enable_dir)
