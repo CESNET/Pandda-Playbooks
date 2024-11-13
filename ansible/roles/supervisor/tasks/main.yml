@@ -20,6 +20,7 @@
   ansible.builtin.file:
     path: "{{ item.dir }}"
     state: "{{ item.type }}"
+    mode: "0755"
   loop:
     - { dir: "/etc/supervisord.d", type: directory }
     - { dir: "/etc/supervisord.d/enabled", type: directory }
