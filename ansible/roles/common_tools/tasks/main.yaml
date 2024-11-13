@@ -13,3 +13,13 @@
   ansible.builtin.dnf:
     name: vim
     state: latest
+
+- name: Git is installed
+  ansible.builtin.dnf:
+    name: git
+    state: latest
+
+- name: Net-tools is installed
+  ansible.builtin.dnf:
+    name: net-tools
+    state: latest
