@@ -2,4 +2,4 @@
 - name: dpdk-tools is installed
   ansible.builtin.dnf:
     name: dpdk-tools
-    state: latest
+    state: latest # noqa package-latest
