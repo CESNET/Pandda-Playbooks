@@ -83,6 +83,3 @@
     - { regexp: ';childlogdir=/tmp', line: 'childlogdir=/var/log/supervisord_modules            ; ("AUTO" child log dir, default $TEMP)' }
   tags:
     - install
-
-
-

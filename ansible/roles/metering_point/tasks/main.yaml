@@ -23,7 +23,7 @@
     dest: /opt/metering-point/bin/dpdkhugepages_setup.sh
     mode: "0755"
 
-- name: DPDK hugepages service is configured 
+- name: DPDK hugepages service is configured
   ansible.builtin.copy:
     src: dpdkhugepages.service
     dest: /usr/lib/systemd/system/dpdkhugepages.service
