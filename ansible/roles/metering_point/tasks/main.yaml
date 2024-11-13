@@ -35,6 +35,7 @@
       fi
     done
   register: ipfixprobe_instances
+  changed_when: true
   ignore_errors: true
 
 - name: Stop ipfixprobe instances
