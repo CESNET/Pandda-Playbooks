@@ -43,10 +43,10 @@
 
 - name: Stop ipfixprobe instances
   ansible.builtin.systemd:
-    name: "ipfixprobe@instance_{{item}}.service"
+    name: "ipfixprobe@instance_{{ item }}.service"
     enabled: true
     state: stopped
-  loop: "{{ipfixprobe_instances.stdout_lines}}"
+  loop: "{{ ipfixprobe_instances.stdout_lines }}"
 
 - name: Detected ipfixprobe instances
   ansible.builtin.debug:
@@ -64,7 +64,7 @@
 
 - name: Start ipfixprobe instances
   ansible.builtin.systemd:
-    name: "ipfixprobe@instance_{{item}}.service"
+    name: "ipfixprobe@instance_{{ item }}.service"
     enabled: true
     state: started
-  loop: "{{ipfixprobe_instances.stdout_lines}}"
+  loop: "{{ ipfixprobe_instances.stdout_lines }}"
