@@ -1,0 +1,4 @@
+dependencies:
+  - role: supervisor
+  - role: ipfixcol2
+  - role: repository_nemea_stable
