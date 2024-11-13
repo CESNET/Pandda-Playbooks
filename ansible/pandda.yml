@@ -1,12 +1,14 @@
 ---
-- hosts: metering_point
+- name: Pandda metering point is installed
+  hosts: metering_point
   become: true
   roles:
     - common_tools
     - ipfixprobe_dpdk
     - metering_point
 
-- hosts: collector
+- name: Pandda collector is installed
+  hosts: collector
   become: true
   roles:
     - common_tools
