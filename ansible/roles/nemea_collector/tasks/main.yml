@@ -1,6 +1,6 @@
 ---
 - name: NEMEA packages are installed
-  dnf:
+  ansible.builtin.dnf:
     name:
       - telemetry
       - nemea-modules
@@ -11,7 +11,7 @@
   tags: install
 
 - name: UNIREC output plugin to IPFIXcol2 is installed
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: /etc/ipfixcol2/ipfixcol2-startup.xml
     marker: "<!-- {mark} ANSIBLE MANAGED BLOCK (NEMEA UNIREC OUTPUT) -->"
     insertbefore: "</outputPlugins>"
@@ -22,7 +22,7 @@
     - configure
 
 - name: FUSE configuration for telemetry is installed
-  copy:
+  ansible.builtin.copy:
     src: "fuse.conf"
     dest: "/etc/fuse.conf"
     mode: 0755
@@ -31,7 +31,7 @@
     - configure
 
 - name: Directory for telemetry is created
-  file:
+  ansible.builtin.file:
     path: /var/stats
     state: directory
     mode: 0777

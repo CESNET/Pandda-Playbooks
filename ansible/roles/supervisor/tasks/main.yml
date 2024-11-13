@@ -1,6 +1,6 @@
 ---
 - name: Supervisor is installed
-  dnf:
+  ansible.builtin.dnf:
     name: supervisor
     state: present
   tags:
@@ -8,7 +8,7 @@
     - configure
 
 - name: Supervisord service is started
-  systemd:
+  ansible.builtin.systemd:
     name: supervisord
     state: started
     enabled: yes
@@ -17,7 +17,7 @@
     - configure
 
 - name: Configuration directory structure for supervisor is created
-  file:
+  ansible.builtin.file:
     path: "{{ item.dir }}"
     state: "{{ item.type }}"
   loop:
@@ -29,7 +29,7 @@
     - konfigurace
 
 - name: Supervisor user is created
-  user:
+  ansible.builtin.user:
     name: supervisor
     system: yes
     shell: /sbin/nologin
@@ -39,7 +39,7 @@
 
 
 - name: Supervisord configuration directory is set
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/supervisord.conf
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
@@ -49,7 +49,7 @@
     - install
 
 - name: Supervisord enable macro is copied
-  copy:
+  ansible.builtin.copy:
     src: supen
     dest: /usr/bin/supen
     mode: 0755
@@ -57,7 +57,7 @@
     - install
 
 - name: Supervisord disable macro is copied
-  copy:
+  ansible.builtin.copy:
     src: supdis
     dest: /usr/bin/supdis
     mode: 0755
@@ -65,7 +65,7 @@
     - install
 
 - name: Log directory for supervisord is created
-  file:
+  ansible.builtin.file:
     path: /var/log/supervisord_modules
     state: directory
     mode: 0777
@@ -74,7 +74,7 @@
     - configure
 
 - name: Log directory for supervisord is set
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/supervisord.conf
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"

@@ -1,13 +1,13 @@
 ---
 - name: IPFIXcol2 package is installed
-  dnf:
+  ansible.builtin.dnf:
     name:
       - ipfixcol2
     state: present
   tags: install
 
 - name: IPFIXcol2 configuration directory is created
-  file:
+  ansible.builtin.file:
     path: /etc/ipfixcol2
     state: directory
   tags:
@@ -15,7 +15,7 @@
     - configure
 
 - name: IPFIXcol2 configuration file is copied
-  copy:
+  ansible.builtin.copy:
     src: "ipfixcol2-startup.xml"
     dest: /etc/ipfixcol2/ipfixcol2-startup.xml
   tags:
@@ -23,7 +23,7 @@
     - configure
 
 - name: supervisord configuration file for IPFIXcol2 is copied
-  copy:
+  ansible.builtin.copy:
     src: "supervisor-ipfixcol2.ini"
     dest: /etc/supervisord.d/configs/supervisor-ipfixcol2.ini
   tags:
@@ -31,12 +31,12 @@
     - configure
 
 - name: IPFIXcol2 in supervisor is enabled
-  command: "supen -n ipfixcol2 -g datasource"
+  ansible.builtin.command: "supen -n ipfixcol2 -g datasource"
   tags: 
     - configure
 
 - name: Changes in supervisor are applied
-  command: "{{ item }}"
+  ansible.builtin.command: "{{ item }}"
   loop:
     - "supervisorctl reread"
     - "supervisorctl update"
@@ -54,7 +54,7 @@
   register: firewalld_status
 
 - name: Firewall port for IPFIXcol2 using firewalld is enabled
-  ansible.builtin.firewalld:
+  ansible.posix.firewalld:
     port: 4739/tcp
     permanent: yes
     immediate: yes
