@@ -24,7 +24,7 @@
     - install
     - configure
 
-- name: supervisord configuration file for IPFIXcol2 is copied
+- name: Supervisord configuration file for IPFIXcol2 is copied
   ansible.builtin.copy:
     src: "supervisor-ipfixcol2.ini"
     dest: /etc/supervisord.d/configs/supervisor-ipfixcol2.ini
