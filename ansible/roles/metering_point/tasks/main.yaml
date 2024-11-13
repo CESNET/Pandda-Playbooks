@@ -2,7 +2,7 @@
 - name: Created metering-point bin directory
   ansible.builtin.file:
     path: /opt/metering-point/bin
-    recurse: yes
+    recurse: true
     state: directory
 
 - name: Copy Ipfixprobe configuration
@@ -40,7 +40,7 @@
 - name: Stop ipfixprobe instances
   ansible.builtin.systemd:
     name: "ipfixprobe@instance_{{item}}.service"
-    enabled: yes
+    enabled: true
     state: stopped
   loop: "{{ipfixprobe_instances.stdout_lines}}"
 
@@ -50,7 +50,7 @@
 
 - name: Reload systemd service
   ansible.builtin.systemd:
-    daemon_reload: yes
+    daemon_reload: true
 
 - name: Restart DPDK hugepages service
   ansible.builtin.systemd:
@@ -61,6 +61,6 @@
 - name: Start ipfixprobe instances
   ansible.builtin.systemd:
     name: "ipfixprobe@instance_{{item}}.service"
-    enabled: yes
+    enabled: true
     state: started
   loop: "{{ipfixprobe_instances.stdout_lines}}"

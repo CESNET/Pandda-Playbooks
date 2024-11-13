@@ -11,7 +11,7 @@
   ansible.builtin.systemd:
     name: supervisord
     state: started
-    enabled: yes
+    enabled: true
   tags:
     - install
     - configure
@@ -31,7 +31,7 @@
 - name: Supervisor user is created
   ansible.builtin.user:
     name: supervisor
-    system: yes
+    system: true
     shell: /sbin/nologin
   tags:
     - install
