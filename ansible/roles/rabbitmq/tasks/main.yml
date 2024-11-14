@@ -1,0 +1,65 @@
+- name: Import RPM keys for RabbitMQ server
+  ansible.builtin.rpm_key:
+    key: "{{ item }}"
+    state: present
+  with_items:
+    - "https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc"
+    - "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.E495BB49CC4BBE5B.key"
+    - "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.9F4587F226208342.key"
+
+- name: Copy rabbitmq.repo file
+  ansible.builtin.copy:
+    src: rabbitmq-{{ epel_version }}.repo
+    dest: /etc/yum.repos.d/rabbitmq.repo
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Update dnf
+  ansible.builtin.dnf:
+    update_cache: true
+
+- name: Install RabbitMQ and dependencies
+  ansible.builtin.dnf:
+    name: ["erlang", "rabbitmq-server", "socat", "logrotate"]
+    state: present
+
+- name: Copy rabbitmq-env.conf file
+  ansible.builtin.copy:
+    src: rabbitmq-env.conf
+    dest: /etc/rabbitmq/rabbitmq-env.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Start and enable rabbitmq-server service
+  ansible.builtin.service:
+    name: rabbitmq-server
+    state: started
+    enabled: true
+
+- name: Enable web management interface
+  ansible.builtin.command:
+    cmd: rabbitmq-plugins enable rabbitmq_management
+    creates: /etc/rabbitmq/enabled_plugins
+
+- name: Download rabbitmqadmin
+  ansible.builtin.get_url:
+    url: "http://localhost:15672/cli/rabbitmqadmin"
+    dest: "/tmp/rabbitmqadmin"
+    mode: "0755"
+
+- name: Move rabbitmqadmin to /usr/bin
+  ansible.builtin.command: mv /tmp/rabbitmqadmin /usr/bin/
+  args:
+    creates: /usr/bin/rabbitmqadmin
+
+- name: Download rmq_reconfigure.sh script
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/CESNET/dp3/master/dp3/scripts/rmq_reconfigure.sh"
+    dest: "/tmp/rmq_reconfigure.sh"
+    mode: "0700"
+
+- name: Run rmq_reconfigure.sh script
+  ansible.builtin.command: sh /tmp/rmq_reconfigure.sh {{ app_name }} {{ workers }}
+  changed_when: true
