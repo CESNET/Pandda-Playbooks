@@ -1,0 +1,9 @@
+---
+- name: Install DP3
+  ansible.builtin.import_tasks: ./dp3/install_dp3.yml
+
+- name: Configure DP3
+  ansible.builtin.import_tasks: ./dp3/configure_dp3.yml
+
+- name: Install&Configure Nginx for DP3
+  ansible.builtin.import_tasks: ./nginx/configure_nginx.yml
