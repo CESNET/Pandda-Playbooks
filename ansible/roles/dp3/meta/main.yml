@@ -1,7 +1,8 @@
 ---
 dependencies:
-  - role: common_tools
   - role: repository_epel
+  - role: common_tools
   - role: python
+  - role: mongodb
   - role: supervisor
   - role: rabbitmq
