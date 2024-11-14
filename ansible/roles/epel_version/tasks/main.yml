@@ -1,0 +1,14 @@
+- name: Get OS version for EPEL
+  ansible.builtin.shell:
+    cmd: "set -o pipefail && grep -oE '[0-9]+' /etc/redhat-release | head -1"
+    executable: /bin/bash
+  register: os_version
+  changed_when: false
+
+- name: Set EPEL version based on OS version
+  ansible.builtin.set_fact:
+    epel_version: "{{ os_version.stdout }}"
+
+- name: Print EPEL version
+  ansible.builtin.debug:
+    msg: "Detected EPEL version: {{ epel_version }}"
