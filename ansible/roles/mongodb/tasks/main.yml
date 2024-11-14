@@ -1,0 +1,35 @@
+---
+- name: Pull MongoDB Docker image
+  community.docker.docker_image:
+    name: mongo
+    tag: "6"
+    source: pull
+
+- name: Make sure the data directory exists
+  ansible.builtin.file:
+    path: "{{ mongo_data_path }}"
+    state: directory
+    recurse: true
+    mode: "0755"
+
+- name: Template a docker-compose file
+  ansible.builtin.template:
+    src: docker-compose.yml
+    dest: /data/docker-compose.yml
+    mode: "0644"
+
+- name: Copy a systemd service file
+  ansible.builtin.copy:
+    src: mongodb.service
+    dest: /etc/systemd/system/mongodb-{{ app_name }}.service
+    mode: "0644"
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Start MongoDB container
+  ansible.builtin.systemd:
+    name: mongodb-{{ app_name }}
+    state: started
+    enabled: true
