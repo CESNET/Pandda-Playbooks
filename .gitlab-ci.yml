@@ -19,6 +19,9 @@ ansible-lint:
   image: registry.gitlab.com/pipeline-components/ansible-lint:latest
   script:
     - ansible-lint --show-relpath ansible -f codeclimate | python -m json.tool | tee "${CI_PROJECT_DIR}/codeclimate-results.json"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push"'
   artifacts:
     name: "$CI_JOB_NAME artifacts from $CI_PROJECT_NAME on $CI_COMMIT_REF_SLUG"
     reports:
