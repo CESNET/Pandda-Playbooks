@@ -1,0 +1,97 @@
+- name: Remove application and configuration to create clean environment
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    rm -rf /{{ app_name }} && rm -rf /etc/{{ app_name }} && rm -rf /var/run/{{ app_name }}
+    SERVICE_NAME="{{ app_name }}"
+    if systemctl --all --type=service | grep -q "$SERVICE_NAME"; then
+        systemctl stop "$SERVICE_NAME"
+        systemctl disable "$SERVICE_NAME"
+        rm "/etc/systemd/system/${SERVICE_NAME}.service"
+        systemctl daemon-reload
+        systemctl reset-failed
+    fi
+  changed_when: true
+
+- name: Add group
+  ansible.builtin.group:
+    name: "{{ app_name }}"
+    state: present
+
+- name: Add user
+  ansible.builtin.user:
+    name: "{{ app_name }}"
+    group: "{{ app_name }}"
+    state: present
+    shell: /bin/bash
+    createhome: true
+
+- name: Create application folder owned by user {{ app_name }}
+  become: true
+  ansible.builtin.file:
+    path: /{{ app_name }}
+    state: directory
+    owner: "{{ app_name }}"
+    group: "{{ app_name }}"
+    mode: "0755"
+
+- name: Copy application data to /{{ app_name }}
+  ansible.builtin.copy:
+    src: "{{ inventory_dir }}/external/adict-lite/dp3_server/{{ item }}"
+    dest: /{{ app_name }}/
+    owner: "{{ app_name }}"
+    group: "{{ app_name }}"
+    mode: "0644"
+  with_items:
+    - config
+    - modules
+    - scripts
+
+- name: Create folder in /var/run for application
+  ansible.builtin.file:
+    path: /var/run/{{ app_name }}
+    state: directory
+    owner: "{{ app_name }}"
+    group: "{{ app_name }}"
+    mode: "0755"
+
+- name: Create folder for datapoints history
+  ansible.builtin.file:
+    path: /data/datapoints
+    state: directory
+    owner: "{{ app_name }}"
+    group: "{{ app_name }}"
+    mode: "0755"
+
+- name: Setup supervisor control of all DP3 processes
+  ansible.builtin.shell: |
+    source {{ venvdir }}/bin/activate && sudo $(which dp3) config supervisor --config /{{ app_name }}/config --app-name {{ app_name }}
+  args:
+    creates:
+      - /etc/{{ app_name }}/supervisor.conf
+      - /etc/{{ app_name }}/supervisor.d/api.ini
+      - /etc/{{ app_name }}/supervisor.d/workers.ini
+      - /etc/{{ app_name }}/supervisor.d/ecl_master.ini
+      - /etc/systemd/system/{{ app_name }}.service
+      - /usr/bin/{{ app_name }}ctl
+
+- name: Reload units
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Start and enable application
+  ansible.builtin.systemd:
+    name: "{{ app_name }}"
+    state: restarted
+    enabled: true
+
+- name: Ensure application is running
+  community.general.supervisorctl:
+    name: "{{ item }}"
+    state: restarted
+    config: /etc/{{ app_name }}/supervisord.conf
+  with_items:
+    - api
+    - w:worker0
+    - ecl_master
