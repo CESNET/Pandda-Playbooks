@@ -1,0 +1,3 @@
+[submodule "ansible/inventory/external/adict-lite"]
+	path = ansible/inventory/external/adict-lite
+	url = https://gitlab.liberouter.org/pandda/adict-lite.git
