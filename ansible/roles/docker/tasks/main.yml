@@ -1,0 +1,37 @@
+- name: Install required system packages
+  ansible.builtin.dnf:
+    name:
+      - dnf-utils
+      - device-mapper-persistent-data
+      - lvm2
+      - yum-utils
+    state: present
+    update_cache: true
+
+- name: Add Docker repository
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/rhel/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Install Docker
+  ansible.builtin.dnf:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+    update_cache: true
+
+- name: Start and enable Docker service
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  with_items:
+    - docker
+    - containerd
