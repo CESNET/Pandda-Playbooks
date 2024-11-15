@@ -1,3 +1,4 @@
 ---
 dependencies:
   - role: repository_epel
+  - role: epel_version
