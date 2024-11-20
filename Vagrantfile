@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "collector" do |collector|
     collector.vm.box = "bento/oraclelinux-9"
     # Set a static IP
-    config.vm.network "private_network", ip: "192.168.33.10"
+    config.vm.network "private_network", ip: "192.168.56.10"
 
     collector.vm.hostname = "panddacol"
     collector.vm.provision "shell", inline: <<-SHELL
