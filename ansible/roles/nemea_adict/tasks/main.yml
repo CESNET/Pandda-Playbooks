@@ -1,0 +1,23 @@
+---
+- name: Ensure /usr/bin/nemea_adict exists
+  ansible.builtin.file:
+    path: "/usr/bin/nemea_adict"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  tags: install
+
+- name: Copy modules to /usr/bin/nemea_adict
+  ansible.builtin.copy:
+    src: "{{ inventory_dir }}/external/adict-lite/nemea_modules/{{ item.src }}"
+    dest: "/usr/bin/nemea_adict/{{ item.dst }}"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  with_items:
+    - {"src": "ip_activity2/ip_activity2.py", "dst": "ip_activity2.py"}
+    - {"src": "nemea_adict_sender/nead.py", "dst": "nead.py"}
+    - {"src": "open_ports/open_ports.py", "dst": "open_ports.py"}
+    - {"src": "recog/recog.py", "dst": "recog.py"}
+  tags: install

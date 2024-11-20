@@ -1,0 +1,3 @@
+dependencies:
+  - role: nemea_collector
+  - role: dp3
