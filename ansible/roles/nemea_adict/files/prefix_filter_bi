@@ -1,0 +1,5 @@
+# This file contains a list of prefixes that should be monitored by the collector
+# To be generated from configured prefixes later
+# Selected prefixes - incoming traffic only
+:
+DST_IP == 192.168.33.0/21;
