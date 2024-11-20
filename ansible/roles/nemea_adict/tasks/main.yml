@@ -21,3 +21,48 @@
     - {"src": "open_ports/open_ports.py", "dst": "open_ports.py"}
     - {"src": "recog/recog.py", "dst": "recog.py"}
   tags: install
+
+- name: Copy configuration files
+  ansible.builtin.copy:
+    src: files/configs/
+    dest: /etc/supervisord.d/configs/
+    owner: root
+    group: root
+    mode: '0644'
+  tags: configure
+
+- name: Ensure /etc/nemea_adict directory exists
+  ansible.builtin.file:
+    name: /etc/nemea_adict
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  tags: configure
+
+- name: Copy ADiCT prefix filter configuration
+  ansible.builtin.copy:
+    src: files/{{ item }}
+    dest: /etc/nemea_adict/{{ item }}
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - prefix_filter_single
+  tags: configure
+
+- name: Enable NEMEA module groups
+  ansible.builtin.command: supen -d {{ item }} -g {{ item }}
+  changed_when: true
+  with_items:
+    - adict_prefix_filter
+  tags: configure
+
+- name: Apply changes in supervisor configuration
+  ansible.builtin.command: "{{ item }}"
+  changed_when: true
+  loop:
+    - "supervisorctl reread"
+    - "supervisorctl update"
+    - "supervisorctl start adict_prefix_filter:"
+  tags: configure
