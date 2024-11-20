@@ -42,7 +42,7 @@
 
 - name: Copy ADiCT prefix filter configuration
   ansible.builtin.copy:
-    src: files/{{ item }}
+    src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/nemea_adict/{{ item }}"
     dest: /etc/nemea_adict/{{ item }}
     owner: root
     group: root

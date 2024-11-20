@@ -2,7 +2,7 @@
 # To be generated from configured prefixes later
 # Selected prefixes - both directions
 :
-SRC_IP == 192.168.33.0/21 || DST_IP == 192.168.33.0/21;
+SRC_IP == 192.168.56.0/21 || DST_IP == 192.168.56.0/21;
 # Selected prefixes - outgoing traffic only
 :
-SRC_IP == 192.168.33.0/21;
+SRC_IP == 192.168.56.0/21;
