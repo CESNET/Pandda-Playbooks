@@ -57,6 +57,7 @@
   with_items:
     - adict_prefix_filter
     - adict_ip_activity
+    - adict_open_ports
   tags: configure
 
 - name: Apply changes in supervisor configuration
@@ -67,4 +68,5 @@
     - "supervisorctl update"
     - "supervisorctl start adict_prefix_filter:"
     - "supervisorctl start adict_ip_activity:"
+    - "supervisorctl start adict_open_ports:"
   tags: configure
