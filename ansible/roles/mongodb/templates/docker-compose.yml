@@ -1,0 +1,17 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: mongo_{{ app_name }}
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - {{ mongo_data_path }}:/data/db
+    deploy:
+      resources:
+        limits:
+          memory: "{{ memory_limit }}"
+    logging:
+      driver: local
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "{{ app_name }}"
+      MONGO_INITDB_ROOT_PASSWORD: "{{ app_name }}"

@@ -1,0 +1,39 @@
+---
+- name: Set etcdir if not defined to default value
+  ansible.builtin.set_fact:
+    etcdir: "{{ etcdir | default('adict') }}"
+
+- name: Set installdir if not defined to default value
+  ansible.builtin.set_fact:
+    installdir: "{{ installdir | default('/adict') }}"
+
+- name: Set venvdir if not defined to default value
+  ansible.builtin.set_fact:
+    venvdir: "{{ venvdir | default('/dp3-venv') }}"
+
+- name: Set app_name if not defined to default value
+  ansible.builtin.set_fact:
+    app_name: "{{ app_name | default('adict') }}"
+
+- name: Set workers if not defined to default value
+  ansible.builtin.set_fact:
+    workers: "{{ workers | default(2) }}"
+
+- name: Set memory_limit if not defined
+  ansible.builtin.set_fact:
+    memory_limit: "{{ memory_limit | default('1g') }}"
+
+- name: Set mongo_data_path if not defined
+  ansible.builtin.set_fact:
+    mongo_data_path: "{{ mongo_data_path | default('/data/db') }}"
+
+- name: Print ADICT variables
+  ansible.builtin.debug:
+    msg:
+      - "etcdir: {{ etcdir }}"
+      - "installdir: {{ installdir }}"
+      - "venvdir: {{ venvdir }}"
+      - "app_name: {{ app_name }}"
+      - "workers: {{ workers }}"
+      - "memory_limit: {{ memory_limit }}"
+      - "mongo_data_path: {{ mongo_data_path }}"

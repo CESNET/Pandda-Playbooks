@@ -23,3 +23,13 @@
   ansible.builtin.dnf:
     name: net-tools
     state: latest # noqa package-latest
+
+- name: Wget is installed
+  ansible.builtin.dnf:
+    name: wget
+    state: latest # noqa package-latest
+
+- name: Package dnf-plugins-core is installed
+  ansible.builtin.dnf:
+    name: dnf-plugins-core
+    state: latest # noqa package-latest
