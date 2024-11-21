@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: adict_vars
+  - role: python
+  - role: docker

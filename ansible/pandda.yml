@@ -13,3 +13,5 @@
   roles:
     - common_tools
     - nemea_collector
+    - dp3
+    - nemea_adict

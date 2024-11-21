@@ -1,0 +1,21 @@
+- name: Install dependencies for dp3
+  ansible.builtin.dnf:
+    name: ["redis", "socat", "logrotate"]
+    state: present # noqa package-latest
+
+- name: Start and enable redis service
+  ansible.builtin.service:
+    name: redis
+    state: started
+    enabled: true
+
+- name: Create Python virtual environment for DP3
+  ansible.builtin.command:
+    cmd: python3.9 -m venv {{ venvdir }}
+    creates: "{{ venvdir }}/bin/activate"
+
+- name: Install dp3 from git
+  ansible.builtin.pip:
+    name: "git+https://github.com/CESNET/dp3.git#egg=dp-cubed[deploy]"
+    state: present
+    virtualenv: "{{ venvdir }}"

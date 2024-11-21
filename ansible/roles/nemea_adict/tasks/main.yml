@@ -1,0 +1,93 @@
+---
+- name: Ensure /usr/bin/nemea_adict exists
+  ansible.builtin.file:
+    path: "/usr/bin/nemea_adict"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  tags: install
+
+- name: Copy modules to /usr/bin/nemea_adict
+  ansible.builtin.copy:
+    src: "{{ inventory_dir }}/external/adict-lite/nemea_modules/{{ item.src }}"
+    dest: "/usr/bin/nemea_adict/{{ item.dst }}"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  with_items:
+    - {"src": "ip_activity2/ip_activity2.py", "dst": "ip_activity2.py"}
+    - {"src": "nemea_adict_sender/nead.py", "dst": "nead.py"}
+    - {"src": "open_ports/open_ports.py", "dst": "open_ports.py"}
+    - {"src": "recog/recog.py", "dst": "recog.py"}
+  tags: install
+
+- name: Copy configuration files
+  ansible.builtin.copy:
+    src: files/configs/
+    dest: /etc/supervisord.d/configs/
+    owner: root
+    group: root
+    mode: '0644'
+  tags: configure
+
+- name: Ensure /etc/nemea_adict directory exists
+  ansible.builtin.file:
+    name: /etc/nemea_adict
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  tags: configure
+
+- name: Copy ADiCT prefix filter configuration
+  ansible.builtin.copy:
+    src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/nemea_adict/{{ item }}"
+    dest: /etc/nemea_adict/{{ item }}
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - prefix_filter_single
+    - prefix_filter_bi
+  tags: configure
+
+- name: Ensure /etc/nemea_adict/recog directory exists
+  ansible.builtin.file:
+    name: /etc/nemea_adict/recog
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  tags: configure
+
+- name: Copy Recog module configuration
+  ansible.builtin.copy:
+    src: files/recog/
+    dest: /etc/nemea_adict/recog/
+    owner: root
+    group: root
+    mode: '0644'
+  tags: configure
+
+- name: Enable NEMEA module groups
+  ansible.builtin.command: supen -d {{ item }} -g {{ item }}
+  changed_when: true
+  with_items:
+    - adict_prefix_filter
+    - adict_ip_activity
+    - adict_open_ports
+    - adict_recog
+  tags: configure
+
+- name: Apply changes in supervisor configuration
+  ansible.builtin.command: "{{ item }}"
+  changed_when: true
+  loop:
+    - "supervisorctl reread"
+    - "supervisorctl update"
+    - "supervisorctl start adict_prefix_filter:"
+    - "supervisorctl start adict_ip_activity:"
+    - "supervisorctl start adict_open_ports:"
+    - "supervisorctl start adict_recog:"
+  tags: configure
