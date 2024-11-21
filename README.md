@@ -36,6 +36,6 @@ UDP=yes // (yes/no) použití UDP protokolu, jinak TCP
 ```
 
 ## Spuštění pomocí testovacího Vagrantu
-1. Odkomentujte řádek `#192.168.33.10 ansible_become=yes ansible_become_method=sudo` v `ansible/inventory/collector_vagrant_hosts` 🔧
+1. Odkomentujte řádek `#192.168.55.10 ansible_become=yes ansible_become_method=sudo` v `ansible/inventory/collector_vagrant_hosts` 🔧
 2. V root složce repoziáře spusťte vagrant pomocí `vagrant up`
 

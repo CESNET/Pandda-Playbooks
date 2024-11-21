@@ -1,2 +1,2 @@
 [collector]
-#192.168.33.10 ansible_become=yes ansible_become_method=sudo
+#192.168.56.10 ansible_become=yes ansible_become_method=sudo
