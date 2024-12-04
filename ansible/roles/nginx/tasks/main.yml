@@ -1,26 +1,30 @@
-- name: Install dependencies
+- name: Install nginx
   ansible.builtin.dnf:
-    name: ["nginx"]
+    name: nginx
     state: present # noqa package-latest
     update_cache: true
+  tags: install
 
-- name: Run dp3 configuration for nginx
-  become: true
-  ansible.builtin.shell: |
-    source {{ venvdir }}/bin/activate && $(which dp3) config nginx --hostname {{ ansible_ssh_host }} --app-name {{ app_name }} --www-root {{ www_root }}
-  vars:
-    www_root: /var/www/dp3
-  args:
-    creates:
-      - /etc/nginx/nginx.conf
-      - /etc/nginx/conf.d/api.conf
-      - /var/www/dp3/index.html
+- name: Copy configuration
+  ansible.builtin.template:
+    src: files/{{ item }}
+    dest: /etc/nginx/{{ item }}
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+    - nginx.conf
+    - conf.d/api.conf
+    - conf.d/frontend.conf
+  tags: configure
+  register: nginx_conf
 
-- name: Start and enable nginx service
+- name: Restart and enable nginx service
   ansible.builtin.service:
     name: nginx
-    state: started
+    state: restarted
     enabled: true
+  tags: install
 
 - name: Ensure firewalld is not masked, enabled and running
   ansible.builtin.systemd:
@@ -28,13 +32,16 @@
     masked: false
     enabled: true
     state: started
+  tags: install
 
 - name: Open port 80/tcp
   ansible.posix.firewalld:
     port: 80/tcp
     permanent: true
     state: enabled
+  tags: install
 
 - name: Reload firewalld
   ansible.builtin.command: firewall-cmd --reload
   changed_when: true
+  tags: install
