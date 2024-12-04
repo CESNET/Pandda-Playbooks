@@ -6,3 +6,4 @@ dependencies:
   - role: mongodb
   - role: supervisor
   - role: rabbitmq
+  - role: nginx
