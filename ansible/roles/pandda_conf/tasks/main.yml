@@ -1,0 +1,18 @@
+---
+- name: Create pandda configuration directory
+  ansible.builtin.file:
+    path: /etc/pandda.d/
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Upload main pandda configuration file
+  ansible.builtin.copy:
+    src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/pandda.yaml"
+    dest: "{{ pandda_conf_path }}pandda.yaml"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: true
+    force: true
