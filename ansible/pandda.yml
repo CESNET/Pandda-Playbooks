@@ -13,5 +13,6 @@
   roles:
     - common_tools
     - nemea_collector
+    - pandda_gui
     - dp3
     - nemea_adict
