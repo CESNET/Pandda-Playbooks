@@ -1,0 +1,10 @@
+nginx_ssl:
+  validity_days: 3650
+  key:
+    dir: /etc/ssl/private
+    dir_permissions: "0700"
+    file: nginx_self_signed.key
+  cert:
+    dir: /etc/ssl/certs
+    dir_permissions: "u+rwx"
+    file: nginx_self_signed.crt

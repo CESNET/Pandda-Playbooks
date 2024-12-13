@@ -19,6 +19,9 @@
   tags: configure
   register: nginx_conf
 
+- name: Generate SSL certificates
+  ansible.builtin.import_tasks: generate_certs.yml
+
 - name: Restart and enable nginx service
   ansible.builtin.service:
     name: nginx
@@ -37,6 +40,13 @@
 - name: Open port 80/tcp
   ansible.posix.firewalld:
     port: 80/tcp
+    permanent: true
+    state: enabled
+  tags: install
+
+- name: Open port 443/tcp
+  ansible.posix.firewalld:
+    port: 443/tcp
     permanent: true
     state: enabled
   tags: install
