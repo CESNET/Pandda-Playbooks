@@ -14,8 +14,8 @@
     mode: "0644"
   with_items:
     - nginx.conf
-    - conf.d/api.conf
-    - conf.d/frontend.conf
+    - default.d/api.conf
+    - default.d/frontend.conf
   tags: configure
   register: nginx_conf
 
