@@ -39,3 +39,4 @@ UDP=yes // (yes/no) použití UDP protokolu, jinak TCP
 1. Odkomentujte řádek `#192.168.55.10 ansible_become=yes ansible_become_method=sudo` v `ansible/inventory/collector_vagrant_hosts` 🔧
 2. V root složce repoziáře spusťte vagrant pomocí `vagrant up`
 
+PANDDA GUI bude přístupné na `http://localhost:8000` a `https://localhost:8001`.
