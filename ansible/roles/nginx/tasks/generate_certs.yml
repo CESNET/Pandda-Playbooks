@@ -1,0 +1,22 @@
+- name: Create SSL key directory
+  ansible.builtin.file:
+    path: "{{ nginx_ssl.key.dir }}"
+    mode: "{{ nginx_ssl.key.dir_permissions }}"
+    state: directory
+
+- name: Create SSL cert directory
+  ansible.builtin.file:
+    path: "{{ nginx_ssl.cert.dir }}"
+    mode: "{{ nginx_ssl.cert.dir_permissions }}"
+    state: directory
+
+- name: Create self-signed certificate
+  ansible.builtin.command: >
+    openssl req -x509 -nodes
+    -subj '/CN={{ ansible_ssh_host }}'
+    -days {{ nginx_ssl.validity_days }}
+    -newkey rsa:4096 -sha256
+    -keyout '{{ nginx_ssl.key.dir }}/{{ nginx_ssl.key.file }}'
+    -out '{{ nginx_ssl.cert.dir }}/{{ nginx_ssl.cert.file }}'
+  args:
+    creates: "{{ nginx_ssl.cert.dir }}/{{ nginx_ssl.cert.file }}"
