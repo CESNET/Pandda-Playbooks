@@ -6,8 +6,13 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "collector" do |collector|
     collector.vm.box = "bento/oraclelinux-9"
+
     # Set a static IP
     config.vm.network "private_network", ip: "192.168.56.10"
+
+    # Forward ports
+    config.vm.network "forwarded_port", guest: 80, host: 8000, protocol: "tcp"
+    config.vm.network "forwarded_port", guest: 443, host: 8001, protocol: "tcp"
 
     collector.vm.hostname = "panddacol"
     collector.vm.provision "shell", inline: <<-SHELL
