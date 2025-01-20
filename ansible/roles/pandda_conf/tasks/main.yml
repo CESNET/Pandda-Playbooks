@@ -16,3 +16,25 @@
     mode: "0644"
     backup: true
     force: true
+
+- name: Create directory /opt/pandda/
+  ansible.builtin.file:
+    path: /opt/pandda/
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
+- name: Upload configuration generator script
+  ansible.builtin.copy:
+    src: files/pandda_conf.py
+    dest: /opt/pandda/pandda_conf.py
+    owner: root
+    group: root
+    mode: "0755"
+    backup: true
+    force: true
+
+- name: Install pyyaml python package
+  ansible.builtin.pip:
+    name: pyyaml
