@@ -7,3 +7,4 @@ dependencies:
   - role: supervisor
   - role: rabbitmq
   - role: nginx
+  - role: pandda_conf

@@ -47,6 +47,22 @@
     - modules
     - scripts
 
+- name: Copy generator configuration to /etc/pandda.d/
+  ansible.builtin.template:
+    src: adict_server_config.yml
+    dest: /etc/pandda.d/adict_server_config.yml
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
+- name: Execute pandda configuration generator
+  ansible.builtin.command:
+    cmd: python3 /opt/pandda/pandda_conf.py /etc/pandda.d/adict_server_config.yml
+  args:
+    creates:
+      - "/{{ app_name }}/config/modules/ip_filter.yml"
+  tags: configure
+
 - name: Create folder in /var/run for application
   ansible.builtin.file:
     path: /var/run/{{ app_name }}
