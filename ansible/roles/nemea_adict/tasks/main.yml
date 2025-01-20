@@ -20,6 +20,7 @@
     - {"src": "nemea_adict_sender/nead.py", "dst": "nead.py"}
     - {"src": "open_ports/open_ports.py", "dst": "open_ports.py"}
     - {"src": "recog/recog.py", "dst": "recog.py"}
+    - {"src": "common/ip_network_filter.py", "dst": "ip_network_filter.py"}
   tags: install
 
 - name: Copy configuration files
