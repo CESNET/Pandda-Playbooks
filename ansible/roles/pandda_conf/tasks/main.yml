@@ -36,6 +36,8 @@
     force: true
   loop:
     - adict_conf.py
+    - ipfixcol2_conf.py
+
 
 - name: Install pyyaml python package
   ansible.builtin.pip:
