@@ -50,9 +50,9 @@
     mode: "0644"
   tags: configure
 
-- name: Execute pandda configuration generator
+- name: Execute adict configuration generator
   ansible.builtin.command:
-    cmd: python3 /opt/pandda/pandda_conf.py /etc/pandda.d/nemea_adict_filters.yml
+    cmd: python3 /opt/pandda/adict_conf.py /etc/pandda.d/nemea_adict_filters.yml
   args:
     creates:
       - /etc/nemea_adict/prefix_filter_single
