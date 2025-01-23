@@ -1,0 +1,14 @@
+- collector:
+    port: 4739
+    proto: "TCP"
+#    forward_targets:
+#      - { host: "host1.liberouter.org", port: 4739, proto: "TCP" }
+#      - { host: "host2.liberouter.org", port: 4739, proto: "UDP" }
+- adict:
+    protected_prefixes:
+      - 147.32.30.0/23
+    users:
+      - username: admin
+        password: admin
+      - username: local
+        password: local

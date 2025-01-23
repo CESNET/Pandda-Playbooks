@@ -1,0 +1,3 @@
+[collector]
+#cti-collector.liberouter.org ansible_ssh_user=root # short term real data testing
+#cti2-collector.liberouter.org ansible_ssh_user=root # long term real data testing
