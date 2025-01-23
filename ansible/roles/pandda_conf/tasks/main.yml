@@ -27,13 +27,15 @@
 
 - name: Upload configuration generator script
   ansible.builtin.copy:
-    src: files/pandda_conf.py
-    dest: /opt/pandda/pandda_conf.py
+    src: "files/{{ item }}"
+    dest: "/opt/pandda/{{ item }}"
     owner: root
     group: root
     mode: "0755"
     backup: true
     force: true
+  loop:
+    - adict_conf.py
 
 - name: Install pyyaml python package
   ansible.builtin.pip:
