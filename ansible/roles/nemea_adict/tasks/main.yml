@@ -20,6 +20,7 @@
     - {"src": "nemea_adict_sender/nead.py", "dst": "nead.py"}
     - {"src": "open_ports/open_ports.py", "dst": "open_ports.py"}
     - {"src": "recog/recog.py", "dst": "recog.py"}
+    - {"src": "common/ip_network_filter.py", "dst": "ip_network_filter.py"}
   tags: install
 
 - name: Copy configuration files
@@ -40,16 +41,23 @@
     mode: '0755'
   tags: configure
 
-- name: Copy ADiCT prefix filter configuration
-  ansible.builtin.copy:
-    src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/nemea_adict/{{ item }}"
-    dest: /etc/nemea_adict/{{ item }}
-    owner: root
-    group: root
-    mode: '0644'
-  with_items:
-    - prefix_filter_single
-    - prefix_filter_bi
+- name: Copy generator configuration to /etc/pandda.d/
+  ansible.builtin.template:
+    src: files/nemea_adict_filters.yml
+    dest: /etc/pandda.d/nemea_adict_filters.yml
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  tags: configure
+
+- name: Execute pandda configuration generator
+  ansible.builtin.command:
+    cmd: python3 /opt/pandda/pandda_conf.py /etc/pandda.d/nemea_adict_filters.yml
+  args:
+    creates:
+      - /etc/nemea_adict/prefix_filter_single
+      - /etc/nemea_adict/prefix_filter_bi
+      - /etc/nemea_adict/prefixes.conf
   tags: configure
 
 - name: Ensure /etc/nemea_adict/recog directory exists

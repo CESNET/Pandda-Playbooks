@@ -11,6 +11,7 @@
   hosts: collector
   become: true
   roles:
+    - pandda_conf
     - common_tools
     - nemea_collector
     - pandda_gui
