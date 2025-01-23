@@ -1,6 +1,6 @@
 - name: Copy frontend RPM
   ansible.builtin.copy:
-    src: files/pandda_frontend-0.1.0-Linux.rpm
+    src: files/pandda_frontend-0.1.1-Linux.rpm
     dest: /tmp/pandda_gui_frontend.rpm
     mode: "0644"
   tags: install
