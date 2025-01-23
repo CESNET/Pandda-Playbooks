@@ -1,0 +1,17 @@
+- prefix_filter_single:
+    dest: /etc/nemea_adict/prefix_filter_single
+    owner: root
+    group: root
+    mode: '0644'
+
+- prefix_filter_bi:
+    dest: /etc/nemea_adict/prefix_filter_bi
+    owner: root
+    group: root
+    mode: '0644'
+
+- prefixes.conf:
+    dest: /etc/nemea_adict/prefixes.conf
+    owner: root
+    group: root
+    mode: '0644'
