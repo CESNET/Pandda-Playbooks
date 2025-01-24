@@ -11,7 +11,7 @@
           </trapIfcCommon>
           <trapIfcSpec>
               <unix>
-                  <name>eta_flowdata</name>
+                  <name>eta_flowdata_with_zero_pkts</name>
                   <maxClients>64</maxClients>
               </unix>
           </trapIfcSpec>
