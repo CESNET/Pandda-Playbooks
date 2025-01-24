@@ -1,0 +1,9 @@
+---
+- name: Restarting the systemd service of Supervisor to apply all configurations.
+  ansible.builtin.systemd:
+    name: supervisord
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  tags:
+    - configure

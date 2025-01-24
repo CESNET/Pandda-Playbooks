@@ -15,11 +15,11 @@
     - install
     - configure
 
-- name: IPFIXcol2 configuration file is copied
-  ansible.builtin.copy:
-    src: "ipfixcol2-startup.xml"
-    dest: /etc/ipfixcol2/ipfixcol2-startup.xml
-    mode: "0755"
+- name: IPFIXcol2 configuration file is created from pandda.yml
+  ansible.builtin.command:
+    cmd: python3 /opt/pandda/ipfixcol2_conf.py -f /etc/ipfixcol2/ipfixcol2-startup.xml
+    creates: /etc/ipfixcol2/ipfixcol2-startup.xml
+  changed_when: true
   tags:
     - install
     - configure
