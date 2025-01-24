@@ -55,9 +55,9 @@
     group: "root"
     mode: "0644"
 
-- name: Execute pandda configuration generator
+- name: Execute adict configuration generator
   ansible.builtin.command:
-    cmd: python3 /opt/pandda/pandda_conf.py /etc/pandda.d/adict_server_config.yml
+    cmd: python3 /opt/pandda/adict_conf.py /etc/pandda.d/adict_server_config.yml
   args:
     creates:
       - "/{{ app_name }}/config/modules/ip_filter.yml"
