@@ -35,10 +35,13 @@
     backup: true
     force: true
   loop:
+    - adict_basic_auth_conf.py
     - adict_conf.py
     - ipfixcol2_conf.py
 
 
-- name: Install pyyaml python package
+- name: Install Python packages for config generators
   ansible.builtin.pip:
-    name: pyyaml
+    name:
+      - bcrypt~=4.0
+      - pyyaml~=6.0
