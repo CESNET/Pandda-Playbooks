@@ -5,17 +5,20 @@
     recurse: true
     state: directory
 
-- name: Copy Ipfixprobe configuration
-  ansible.builtin.copy:
-    src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/ipfixprobe/"
-    dest: /etc/ipfixprobe/
-    mode: "0755"
-
 - name: Copy hugepages configuration
   ansible.builtin.copy:
     src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/hugepages/"
     dest: /etc/ipfixprobe/
     mode: "0755"
+
+- name: Generate Ipfixprobe configuration
+  ansible.builtin.template:
+    src: instance_ipfixprobe.conf.j2
+    dest: "/etc/ipfixprobe/instance_{{ item.instance_name }}.conf"
+    mode: "0755"
+  loop: "{{ ipfixprobe_probes }}"
+  loop_control:
+    label: "{{ item.instance_name }}"
 
 - name: DPDK hugepages script is installed
   ansible.builtin.copy:

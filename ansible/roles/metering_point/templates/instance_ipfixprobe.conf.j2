@@ -1,0 +1,44 @@
+### INPUT
+{% if item.input.type == 'dpdk' %}
+USE_DPDK=1
+DPDK_DEVICE="{% if item.input.devices is string %}{{ item.input.devices }}{% else %}{{ item.input.devices | join(' -a ') }}{% endif %}"
+DPDK_LCORES="{{ item.input.lcores }}{% if item.input.file_prefix %} --file-prefix {{ item.input.file_prefix }}{% endif %}"
+DPDK_PORT="{{ item.input.port }};m={{ item.input.memsize }};b={{ item.input.mbuf_size }}"
+DPDK_QUEUES_COUNT={{ item.input.queues_count }}
+{% elif item.input.type == 'raw' %}
+INPUT[0]="raw;ifc={{ item.input.ifc }};b={{ item.input.blocks }};p={{ item.input.pkts }}"
+{% endif %}
+
+### PROCESSING PLUGINS
+{% set process_list = [] %}
+{% for plugin in item.plugins %}
+  {% if plugin is string %}
+    {% set _ = process_list.append(plugin) %}
+  {% else %}
+    {# -- Plugin is a dict, e.g. { pstats: [includezeroes, skipdup] } -- #}
+    {% for pname, pparams in plugin.items() %}
+      {% if pparams|length > 0 %}
+        {# -- example "pstats;includezeroes;skipdup" -- #}
+        {% set _ = process_list.append('"' ~ pname ~ ';' ~ (pparams | join(';')) ~ '"') %}
+      {% else %}
+        {# -- If there are no parameters, just the plugin name -- #}
+        {% set _ = process_list.append(pname) %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+
+PROCESS=({{ process_list | join(' ') }})
+
+### STORAGE
+CACHE_SIZE={{ item.cache.size }}
+ACTIVE_TIMEOUT={{ item.cache.active_timeout }}
+INACTIVE_TIMEOUT={{ item.cache.inactive_timeout }}
+
+### OUTPUT
+LINK={{ 1 if item.output.link else 0 }}
+DIR={{ 1 if item.output.dir else 0 }}
+HOST={{ item.output.host }}
+PORT={{ item.output.port }}
+UDP={{ "yes" if item.output.udp else "no" }}
+TEMPLATE_REFRESH_RATE={{ item.output.template_refresh_rate }}
