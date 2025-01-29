@@ -8,6 +8,6 @@
 - name: Install frontend RPM
   ansible.builtin.dnf:
     name: /tmp/pandda_gui_frontend.rpm
-    state: present
+    state: latest # noqa package-latest
     disable_gpg_check: true # TODO
   tags: install
