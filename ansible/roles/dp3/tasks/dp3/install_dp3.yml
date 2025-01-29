@@ -17,5 +17,5 @@
 - name: Install dp3 from git
   ansible.builtin.pip:
     name: "git+https://github.com/CESNET/dp3.git#egg=dp-cubed[deploy]"
-    state: present
+    state: latest # noqa package-latest
     virtualenv: "{{ venvdir }}"

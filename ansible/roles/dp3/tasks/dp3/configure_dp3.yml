@@ -56,11 +56,8 @@
     mode: "0644"
 
 - name: Execute adict configuration generator
-  ansible.builtin.command:
-    cmd: python3 /opt/pandda/adict_conf.py /etc/pandda.d/adict_server_config.yml
-  args:
-    creates:
-      - "/{{ app_name }}/config/modules/ip_filter.yml"
+  ansible.builtin.command: python3 /opt/pandda/adict_conf.py /etc/pandda.d/adict_server_config.yml
+  changed_when: true
   tags: configure
 
 - name: Create folder in /var/run for application
