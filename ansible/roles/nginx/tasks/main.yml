@@ -1,7 +1,7 @@
 - name: Install nginx
   ansible.builtin.dnf:
     name: nginx
-    state: present # noqa package-latest
+    state: latest # noqa package-latest
     update_cache: true
   tags: install
 
@@ -17,7 +17,6 @@
     - default.d/api.conf
     - default.d/frontend.conf
   tags: configure
-  register: nginx_conf
 
 - name: Execute basic HTTP auth configuration generator
   ansible.builtin.command:
