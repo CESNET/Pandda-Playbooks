@@ -17,7 +17,6 @@
     - default.d/api.conf
     - default.d/frontend.conf
   tags: configure
-  register: nginx_conf
 
 - name: Generate SSL certificates
   ansible.builtin.import_tasks: generate_certs.yml
