@@ -1,7 +1,7 @@
 - name: Install dependencies for dp3
   ansible.builtin.dnf:
     name: ["redis", "socat", "logrotate"]
-    state: present # noqa package-latest
+    state: present
 
 - name: Start and enable redis service
   ansible.builtin.service:
