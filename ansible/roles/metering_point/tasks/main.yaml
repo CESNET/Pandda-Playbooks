@@ -11,15 +11,6 @@
     dest: /etc/ipfixprobe/
     mode: "0755"
 
-- name: Generate Ipfixprobe configuration
-  ansible.builtin.template:
-    src: instance_ipfixprobe.conf.j2
-    dest: "/etc/ipfixprobe/instance_{{ item.instance_name }}.conf"
-    mode: "0755"
-  loop: "{{ ipfixprobe_probes }}"
-  loop_control:
-    label: "{{ item.instance_name }}"
-
 - name: DPDK hugepages script is installed
   ansible.builtin.copy:
     src: dpdkhugepages_setup.sh
@@ -31,6 +22,61 @@
     src: dpdkhugepages.service
     dest: /usr/lib/systemd/system/dpdkhugepages.service
     mode: "0755"
+
+- name: Create pandda configuration directory
+  ansible.builtin.file:
+    path: /etc/pandda.d/
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Upload main pandda configuration file
+  ansible.builtin.copy:
+    src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/pandda.yaml"
+    dest: "{{ pandda_conf_path }}pandda.yaml"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: true
+    force: true
+
+- name: Create directory /opt/pandda/
+  ansible.builtin.file:
+    path: /opt/pandda/
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
+- name: Upload configuration generator script
+  ansible.builtin.copy:
+    src: "files/{{ item }}"
+    dest: "/opt/pandda/{{ item }}"
+    owner: root
+    group: root
+    mode: "0755"
+    backup: true
+    force: true
+  loop:
+    - ipfixprobe_conf.py
+    - instance_ipfixprobe.conf.j2
+
+- name: Install pyyaml python package
+  ansible.builtin.pip:
+    name: pyyaml
+
+- name: Install jinja2 python package
+  ansible.builtin.pip:
+    name: jinja2
+
+- name: Generate ipfixprobe configuration using script  # noqa no-changed-when
+  ansible.builtin.command:
+    cmd: >
+      /opt/pandda/ipfixprobe_conf.py
+      {{ pandda_conf_path }}pandda.yaml
+      /opt/pandda/instance_ipfixprobe.conf.j2
+      /etc/ipfixprobe
 
 - name: Detect ipfixprobe instances
   ansible.builtin.shell: |
