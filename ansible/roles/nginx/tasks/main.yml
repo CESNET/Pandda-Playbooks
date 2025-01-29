@@ -1,7 +1,7 @@
 - name: Install nginx
   ansible.builtin.dnf:
     name: nginx
-    state: present # noqa package-latest
+    state: latest # noqa package-latest
     update_cache: true
   tags: install
 
