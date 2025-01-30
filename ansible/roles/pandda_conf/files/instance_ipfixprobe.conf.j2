@@ -36,8 +36,8 @@ ACTIVE_TIMEOUT={{ item.cache.active_timeout }}
 INACTIVE_TIMEOUT={{ item.cache.inactive_timeout }}
 
 ### OUTPUT
-LINK={{ 1 if item.output.link else 0 }}
-DIR={{ 1 if item.output.dir else 0 }}
+LINK={{ item.output.link }}
+DIR={{ item.output.dir }}
 HOST={{ item.output.host }}
 PORT={{ item.output.port }}
 UDP={{ "yes" if item.output.udp else "no" }}
