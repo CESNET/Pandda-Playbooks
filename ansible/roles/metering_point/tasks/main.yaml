@@ -49,27 +49,6 @@
     group: "root"
     mode: "0755"
 
-- name: Upload configuration generator script
-  ansible.builtin.copy:
-    src: "files/{{ item }}"
-    dest: "/opt/pandda/{{ item }}"
-    owner: root
-    group: root
-    mode: "0755"
-    backup: true
-    force: true
-  loop:
-    - ipfixprobe_conf.py
-    - instance_ipfixprobe.conf.j2
-
-- name: Install pyyaml python package
-  ansible.builtin.pip:
-    name: pyyaml
-
-- name: Install jinja2 python package
-  ansible.builtin.pip:
-    name: jinja2
-
 - name: Generate ipfixprobe configuration using script  # noqa no-changed-when
   ansible.builtin.command:
     cmd: >

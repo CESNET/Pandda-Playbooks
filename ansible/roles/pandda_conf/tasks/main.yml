@@ -38,6 +38,8 @@
     - adict_basic_auth_conf.py
     - adict_conf.py
     - ipfixcol2_conf.py
+    - ipfixprobe_conf.py
+    - instance_ipfixprobe.conf.j2
 
 
 - name: Install Python packages for config generators
@@ -45,3 +47,4 @@
     name:
       - bcrypt~=4.0
       - pyyaml~=6.0
+      - jinja2
