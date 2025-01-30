@@ -44,7 +44,7 @@
 - name: Copy generator configuration to /etc/pandda.d/
   ansible.builtin.template:
     src: files/nemea_adict_filters.yml
-    dest: /etc/pandda.d/nemea_adict_filters.yml
+    dest: "{{ pandda_conf_path }}/nemea_adict_filters.yml"
     owner: "root"
     group: "root"
     mode: "0644"
@@ -52,7 +52,7 @@
 
 - name: Execute adict configuration generator
   ansible.builtin.command:
-    cmd: python3 /opt/pandda/adict_conf.py /etc/pandda.d/nemea_adict_filters.yml
+    cmd: "{{ pandda_conf_executable }} {{ pandda_conf_opt }}/adict_conf.py {{ pandda_conf_path }}/nemea_adict_filters.yml"
   args:
     creates:
       - /etc/nemea_adict/prefix_filter_single

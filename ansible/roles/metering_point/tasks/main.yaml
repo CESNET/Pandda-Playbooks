@@ -52,7 +52,7 @@
 - name: Generate ipfixprobe configuration using script  # noqa no-changed-when
   ansible.builtin.command:
     cmd: >
-      /opt/pandda/ipfixprobe_conf.py
+      {{ pandda_conf_executable }} {{ pandda_conf_opt }}/ipfixprobe_conf.py
       {{ pandda_conf_path }}pandda.yaml
       /opt/pandda/instance_ipfixprobe.conf.j2
       /etc/ipfixprobe

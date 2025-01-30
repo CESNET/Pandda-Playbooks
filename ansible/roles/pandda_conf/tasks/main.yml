@@ -17,18 +17,24 @@
     backup: true
     force: true
 
-- name: Create directory /opt/pandda/
+- name: Create directory "{{ pandda_conf_opt }}"
   ansible.builtin.file:
-    path: /opt/pandda/
+    path: "{{ pandda_conf_opt }}"
     state: directory
     owner: "root"
     group: "root"
     mode: "0755"
 
+- name: Create venv for pandda configuration generator
+  ansible.builtin.command:
+    cmd: "python3.9 -m venv {{ pandda_conf_venv }}"
+  args:
+    creates: "{{ pandda_conf_venv }}"
+
 - name: Upload configuration generator script
   ansible.builtin.copy:
     src: "files/{{ item }}"
-    dest: "/opt/pandda/{{ item }}"
+    dest: "{{ pandda_conf_opt }}/{{ item }}"
     owner: root
     group: root
     mode: "0755"
@@ -48,3 +54,4 @@
       - bcrypt~=4.0
       - pyyaml~=6.0
       - jinja2
+    executable: "{{ pandda_conf_pip }}"
