@@ -1,0 +1,34 @@
+name: Linting
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  commitlint:
+    name: Commit Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Commitlint
+        uses: wagoid/commitlint-github-action@v6
+  
+  ansible-lint:
+    name: Ansible Lint
+    runs-on: ubuntu-latest
+    container: registry.gitlab.com/pipeline-components/ansible-lint:latest  # Using same image
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Ansible Lint
+        run: ansible-lint --exclude ansible/inventory/external/adict-lite --show-relpath ansible -f codeclimate | python -m json.tool | tee codeclimate-results.json
+
+      - name: Upload Code Quality Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ansible-lint-codequality
+          path: codeclimate-results.json
+          retention-days: 5
