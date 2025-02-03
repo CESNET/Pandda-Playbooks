@@ -9,8 +9,3 @@
     name: ["python3.9", "python3.9-pip", "python-requests"]
     state: present
   when: epel_version is defined and epel_version=="9"
-
-- name: Upgrade pip
-  ansible.builtin.pip:
-    name: pip
-    version: "21.1.3"

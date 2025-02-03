@@ -17,7 +17,7 @@
 
 - name: IPFIXcol2 configuration file is created from pandda.yml
   ansible.builtin.command:
-    cmd: python3 /opt/pandda/ipfixcol2_conf.py -f /etc/ipfixcol2/ipfixcol2-startup.xml
+    cmd: "{{ pandda_conf_executable }} {{ pandda_conf_opt }}/ipfixcol2_conf.py -f /etc/ipfixcol2/ipfixcol2-startup.xml"
     creates: /etc/ipfixcol2/ipfixcol2-startup.xml
   changed_when: true
   tags:

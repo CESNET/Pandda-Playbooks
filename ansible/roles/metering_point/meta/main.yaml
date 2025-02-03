@@ -1,3 +1,4 @@
 ---
 dependencies:
   - role: dpdk_tools
+  - role: pandda_conf

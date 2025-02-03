@@ -17,18 +17,24 @@
     backup: true
     force: true
 
-- name: Create directory /opt/pandda/
+- name: Create directory "{{ pandda_conf_opt }}"
   ansible.builtin.file:
-    path: /opt/pandda/
+    path: "{{ pandda_conf_opt }}"
     state: directory
     owner: "root"
     group: "root"
     mode: "0755"
 
+- name: Create venv for pandda configuration generator
+  ansible.builtin.command:
+    cmd: "python3.9 -m venv {{ pandda_conf_venv }}"
+  args:
+    creates: "{{ pandda_conf_venv }}"
+
 - name: Upload configuration generator script
   ansible.builtin.copy:
     src: "files/{{ item }}"
-    dest: "/opt/pandda/{{ item }}"
+    dest: "{{ pandda_conf_opt }}/{{ item }}"
     owner: root
     group: root
     mode: "0755"
@@ -38,6 +44,8 @@
     - adict_basic_auth_conf.py
     - adict_conf.py
     - ipfixcol2_conf.py
+    - ipfixprobe_conf.py
+    - instance_ipfixprobe.conf.j2
 
 
 - name: Install Python packages for config generators
@@ -45,3 +53,5 @@
     name:
       - bcrypt~=4.0
       - pyyaml~=6.0
+      - jinja2
+    executable: "{{ pandda_conf_pip }}"

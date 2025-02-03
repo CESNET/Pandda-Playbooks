@@ -1,3 +1,6 @@
 .vagrant
 .vscode
 .idea
+ansible.cfg
+.DS_Store
+./venv

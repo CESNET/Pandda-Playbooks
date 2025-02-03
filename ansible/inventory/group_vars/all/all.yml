@@ -1,0 +1,5 @@
+pandda_conf_path: /etc/pandda.d/
+pandda_conf_executable: /opt/pandda/venv/bin/python3
+pandda_conf_pip: /opt/pandda/venv/bin/pip
+pandda_conf_venv: /opt/pandda/venv
+pandda_conf_opt: /opt/pandda/
