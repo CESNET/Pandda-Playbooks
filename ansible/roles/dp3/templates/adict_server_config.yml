@@ -1,5 +1,5 @@
 - ip_filter.yml:
-    dest: /{{ app_name }}/config/modules/
+    dest: /opt/adict/config/modules/
     owner: "{{ app_name }}"
     group: "{{ app_name }}"
     mode: "0644"

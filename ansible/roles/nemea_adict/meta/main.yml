@@ -1,4 +1,5 @@
 dependencies:
+  - role: repository_nemea_stable
   - role: nemea_collector
   - role: dp3
   - role: pandda_conf

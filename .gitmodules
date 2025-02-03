@@ -1,3 +1,0 @@
-[submodule "ansible/inventory/external/adict-lite"]
-	path = ansible/inventory/external/adict-lite
-	url = git@github.com:CESNET/Pandda-ADiCT.git

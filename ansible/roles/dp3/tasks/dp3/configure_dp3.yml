@@ -2,7 +2,7 @@
   become: true
   ansible.builtin.shell: |
     set -o pipefail
-    rm -rf /{{ app_name }} && rm -rf /etc/{{ app_name }} && rm -rf /var/run/{{ app_name }}
+    rm -rf /opt/adict && rm -rf /etc/{{ app_name }} && rm -rf /var/run/{{ app_name }}
     SERVICE_NAME="{{ app_name }}"
     if systemctl --all --type=service | grep -q "$SERVICE_NAME"; then
         systemctl stop "$SERVICE_NAME"
@@ -26,26 +26,11 @@
     shell: /bin/bash
     createhome: true
 
-- name: Create application folder owned by user {{ app_name }}
-  become: true
-  ansible.builtin.file:
-    path: /{{ app_name }}
-    state: directory
-    owner: "{{ app_name }}"
-    group: "{{ app_name }}"
-    mode: "0755"
-
-- name: Copy application data to /{{ app_name }}
-  ansible.builtin.copy:
-    src: "{{ inventory_dir }}/external/adict-lite/dp3_server/{{ item }}"
-    dest: /{{ app_name }}/
-    owner: "{{ app_name }}"
-    group: "{{ app_name }}"
-    mode: "0644"
-  with_items:
-    - config
-    - modules
-    - scripts
+- name: Install PANDDA ADiCT package
+  ansible.builtin.dnf:
+    name: pandda_adict
+    state: latest # noqa package-latest
+  tags: install
 
 - name: Copy generator configuration to /etc/pandda.d/
   ansible.builtin.template:
@@ -78,7 +63,7 @@
 
 - name: Setup supervisor control of all DP3 processes
   ansible.builtin.shell: |
-    source {{ venvdir }}/bin/activate && sudo $(which dp3) config supervisor --config /{{ app_name }}/config --app-name {{ app_name }}
+    source {{ venvdir }}/bin/activate && sudo $(which dp3) config supervisor --config /opt/adict/config --app-name {{ app_name }}
   args:
     creates:
       - /etc/{{ app_name }}/supervisor.conf

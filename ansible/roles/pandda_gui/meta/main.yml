@@ -1,2 +1,4 @@
 dependencies:
+  - role: repository_nemea_stable
+  - role: dp3
   - role: nginx

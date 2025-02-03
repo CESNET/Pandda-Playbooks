@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Ansible Lint
-        run: ansible-lint --exclude ansible/inventory/external/adict-lite --show-relpath ansible -f codeclimate | python -m json.tool | tee codeclimate-results.json
+        run: ansible-lint --show-relpath ansible -f codeclimate | python -m json.tool | tee codeclimate-results.json
 
       - name: Upload Code Quality Report
         uses: actions/upload-artifact@v4

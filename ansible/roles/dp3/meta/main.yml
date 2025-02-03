@@ -1,6 +1,7 @@
 ---
 dependencies:
   - role: repository_epel
+  - role: repository_nemea_stable
   - role: common_tools
   - role: python
   - role: mongodb
