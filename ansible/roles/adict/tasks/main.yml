@@ -1,0 +1,4 @@
+---
+- name: Install ADiCT when installation is enabled
+  ansible.builtin.include_tasks: install.yml
+  when: install_adict

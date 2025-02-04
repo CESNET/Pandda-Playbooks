@@ -1,4 +1,8 @@
 ---
+- name: Set install_adict if not defined to default value
+  ansible.builtin.set_fact:
+    install_adict: "{{ install_adict | default(false) | bool }}"
+
 - name: Set etcdir if not defined to default value
   ansible.builtin.set_fact:
     etcdir: "{{ etcdir | default('adict') }}"
@@ -30,6 +34,7 @@
 - name: Print ADICT variables
   ansible.builtin.debug:
     msg:
+      - "install_adict: {{ install_adict }}"
       - "etcdir: {{ etcdir }}"
       - "installdir: {{ installdir }}"
       - "venvdir: {{ venvdir }}"

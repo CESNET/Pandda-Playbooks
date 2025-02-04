@@ -1,0 +1,12 @@
+---
+- name: Install pandda_gui if ADiCT installation is enabled
+  ansible.builtin.include_role:
+    name: pandda_gui
+
+- name: Install dp3 if ADiCT installation is enabled
+  ansible.builtin.include_role:
+    name: dp3
+
+- name: Install nemea_adict if ADiCT installation is enabled
+  ansible.builtin.include_role:
+    name: nemea_adict
