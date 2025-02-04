@@ -4,31 +4,6 @@
     name: sudo
     state: latest # noqa package-latest
 
-- name: Htop is installed
-  ansible.builtin.dnf:
-    name: htop
-    state: latest # noqa package-latest
-
-- name: Vim is installed
-  ansible.builtin.dnf:
-    name: vim
-    state: latest # noqa package-latest
-
-- name: Git is installed
-  ansible.builtin.dnf:
-    name: git
-    state: latest # noqa package-latest
-
-- name: Net-tools is installed
-  ansible.builtin.dnf:
-    name: net-tools
-    state: latest # noqa package-latest
-
-- name: Wget is installed
-  ansible.builtin.dnf:
-    name: wget
-    state: latest # noqa package-latest
-
 - name: Package dnf-plugins-core is installed
   ansible.builtin.dnf:
     name: dnf-plugins-core
