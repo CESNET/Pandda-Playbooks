@@ -2,7 +2,7 @@
   become: true
   ansible.builtin.shell: |
     set -o pipefail
-    rm -rf /opt/adict && rm -rf /etc/{{ app_name }} && rm -rf /var/run/{{ app_name }}
+    rm -rf /etc/{{ app_name }} && rm -rf /var/run/{{ app_name }}
     SERVICE_NAME="{{ app_name }}"
     if systemctl --all --type=service | grep -q "$SERVICE_NAME"; then
         systemctl stop "$SERVICE_NAME"
