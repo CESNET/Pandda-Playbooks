@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: mongodb_remove
+  - role: rabbitmq_remove
+  - role: nginx_remove

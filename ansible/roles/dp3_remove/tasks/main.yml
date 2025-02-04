@@ -1,0 +1,73 @@
+---
+- name: Stop and disable application
+  ansible.builtin.systemd:
+    name: "{{ app_name }}"
+    state: stopped
+    enabled: false
+  failed_when: false
+  tags: uninstall
+
+- name: Remove PANDDA ADiCT package
+  ansible.builtin.dnf:
+    name: pandda_adict
+    state: absent
+    autoremove: false
+  tags: uninstall
+
+- name: Remove application and configuration to create clean environment
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    rm -rf /etc/{{ app_name }} && rm -rf /var/run/{{ app_name }} && rm -rf /data/datapoints && rm -rf /var/log/{{ app_name }}
+    SERVICE_NAME="{{ app_name }}"
+    if systemctl --all --type=service | grep -q "$SERVICE_NAME"; then
+        systemctl stop "$SERVICE_NAME"
+        systemctl disable "$SERVICE_NAME"
+        rm "/etc/systemd/system/${SERVICE_NAME}.service"
+        rm -f /usr/bin/${SERVICE_NAME}ctl
+        systemctl daemon-reload
+        systemctl reset-failed
+    fi
+  changed_when: true
+  tags: uninstall
+
+- name: Reload units
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+  tags: uninstall
+
+- name: Remove user
+  ansible.builtin.user:
+    name: "{{ app_name }}"
+    group: "{{ app_name }}"
+    state: absent
+    shell: /bin/bash
+    createhome: true
+  tags: uninstall
+
+- name: Remove group
+  ansible.builtin.group:
+    name: "{{ app_name }}"
+    state: absent
+  tags: uninstall
+
+- name: Stop and disable redis service
+  ansible.builtin.service:
+    name: redis
+    state: stopped
+    enabled: false
+  failed_when: false
+  tags: uninstall
+
+- name: Remove dependencies for dp3
+  ansible.builtin.dnf:
+    name: ["redis", "socat"]
+    state: present
+  tags: uninstall
+
+- name: Remove Python virtual environment for DP3
+  ansible.builtin.file:
+    path: "{{ venvdir }}"
+    state: absent
+  tags: uninstall

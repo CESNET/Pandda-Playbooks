@@ -1,0 +1,27 @@
+---
+- name: Remove rabbitmqadmin from /usr/bin
+  ansible.builtin.file:
+    path: /usr/bin/rabbitmqadmin
+    state: absent
+  tags: uninstall
+
+- name: Stop and disable rabbitmq-server service
+  ansible.builtin.service:
+    name: rabbitmq-server
+    state: stopped
+    enabled: false
+  failed_when: false
+  tags: uninstall
+
+- name: Remove RabbitMQ and dependencies
+  ansible.builtin.dnf:
+    name: ["erlang", "rabbitmq-server", "socat"]
+    state: absent
+    autoremove: false
+  tags: uninstall
+
+- name: Remove rabbitmq configuration directory
+  ansible.builtin.file:
+    path: /etc/rabbitmq/
+    state: absent
+  tags: uninstall
