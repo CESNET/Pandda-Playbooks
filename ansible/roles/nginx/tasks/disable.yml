@@ -1,0 +1,30 @@
+- name: Ensure firewalld is not masked, enabled and running
+  ansible.builtin.systemd:
+    name: firewalld
+    masked: false
+    enabled: true
+    state: started
+  tags: configure
+
+- name: Close ports 80/tcp and 443/tcp
+  ansible.posix.firewalld:
+    port: "{{ item }}/tcp"
+    permanent: true
+    state: disabled
+  tags: configure
+  with_items:
+    - 80
+    - 443
+
+- name: Reload firewalld
+  ansible.builtin.command: firewall-cmd --reload
+  changed_when: true
+  tags: configure
+
+- name: Stop and disable nginx service
+  ansible.builtin.service:
+    name: nginx
+    state: stopped
+    enabled: false
+  tags: configure
+  failed_when: false
