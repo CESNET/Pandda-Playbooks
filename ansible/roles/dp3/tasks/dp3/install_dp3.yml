@@ -3,12 +3,6 @@
     name: ["redis", "socat", "logrotate"]
     state: present
 
-- name: Start and enable redis service
-  ansible.builtin.service:
-    name: redis
-    state: started
-    enabled: true
-
 - name: Create Python virtual environment for DP3
   ansible.builtin.command:
     cmd: python3.9 -m venv {{ venvdir }}

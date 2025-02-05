@@ -1,0 +1,25 @@
+---
+- name: Stop application if running
+  community.general.supervisorctl:
+    name: "{{ item }}"
+    state: stopped
+    config: /etc/{{ app_name }}/supervisord.conf
+  with_items:
+    - api
+    - w:worker0
+    - ecl_master
+  failed_when: false
+
+- name: Stop and disable application
+  ansible.builtin.systemd:
+    name: "{{ app_name }}"
+    state: stopped
+    enabled: false
+  failed_when: false
+
+- name: Stop and disable redis service
+  ansible.builtin.service:
+    name: redis
+    state: stopped
+    enabled: false
+  failed_when: false
