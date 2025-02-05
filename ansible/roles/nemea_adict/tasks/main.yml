@@ -60,24 +60,12 @@
     mode: '0644'
   tags: configure
 
-- name: Enable NEMEA module groups
-  ansible.builtin.command: supen -d {{ item }} -g {{ item }}
-  changed_when: true
-  with_items:
-    - adict_prefix_filter
-    - adict_ip_activity
-    - adict_open_ports
-    - adict_recog
+- name: Disable modules
+  ansible.builtin.include_tasks: disable.yml
+  when: disable_adict
   tags: configure
 
-- name: Apply changes in supervisor configuration
-  ansible.builtin.command: "{{ item }}"
-  changed_when: true
-  loop:
-    - "supervisorctl reread"
-    - "supervisorctl update"
-    - "supervisorctl start adict_prefix_filter:"
-    - "supervisorctl start adict_ip_activity:"
-    - "supervisorctl start adict_open_ports:"
-    - "supervisorctl start adict_recog:"
+- name: Enable modules
+  ansible.builtin.include_tasks: enable.yml
+  when: enable_adict
   tags: configure
