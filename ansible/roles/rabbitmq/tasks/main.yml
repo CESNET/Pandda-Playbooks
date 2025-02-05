@@ -32,34 +32,12 @@
     group: root
     mode: "0644"
 
-- name: Start and enable rabbitmq-server service
-  ansible.builtin.service:
-    name: rabbitmq-server
-    state: started
-    enabled: true
+- name: Stop and disable service
+  ansible.builtin.include_tasks: disable.yml
+  tags: configure
+  when: disable_adict
 
-- name: Enable web management interface
-  ansible.builtin.command:
-    cmd: rabbitmq-plugins enable rabbitmq_management
-    creates: /etc/rabbitmq/enabled_plugins
-
-- name: Download rabbitmqadmin
-  ansible.builtin.get_url:
-    url: "http://localhost:15672/cli/rabbitmqadmin"
-    dest: "/tmp/rabbitmqadmin"
-    mode: "0755"
-
-- name: Move rabbitmqadmin to /usr/bin
-  ansible.builtin.command: mv /tmp/rabbitmqadmin /usr/bin/
-  args:
-    creates: /usr/bin/rabbitmqadmin
-
-- name: Download rmq_reconfigure.sh script
-  ansible.builtin.get_url:
-    url: "https://raw.githubusercontent.com/CESNET/dp3/master/dp3/scripts/rmq_reconfigure.sh"
-    dest: "/tmp/rmq_reconfigure.sh"
-    mode: "0700"
-
-- name: Run rmq_reconfigure.sh script
-  ansible.builtin.command: sh /tmp/rmq_reconfigure.sh {{ app_name }} {{ workers }}
-  changed_when: true
+- name: Start and enable service
+  ansible.builtin.include_tasks: enable.yml
+  tags: configure
+  when: enable_adict
