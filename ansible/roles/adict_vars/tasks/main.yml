@@ -7,6 +7,14 @@
   ansible.builtin.set_fact:
     remove_adict: "{{ remove_adict | default(false) | bool }}"
 
+- name: Set disable_adict if not defined to default value
+  ansible.builtin.set_fact:
+    disable_adict: "{{ disable_adict | default(false) | bool }}"
+
+- name: Set enable_adict if not defined to default value
+  ansible.builtin.set_fact:
+    enable_adict: "{{ enable_adict | default(install_adict) | bool }}"
+
 - name: Set etcdir if not defined to default value
   ansible.builtin.set_fact:
     etcdir: "{{ etcdir | default('adict') }}"
@@ -40,6 +48,8 @@
     msg:
       - "remove_adict: {{ remove_adict }}"
       - "install_adict: {{ install_adict }}"
+      - "disable_adict: {{ disable_adict }}"
+      - "enable_adict: {{ enable_adict }}"
       - "etcdir: {{ etcdir }}"
       - "installdir: {{ installdir }}"
       - "venvdir: {{ venvdir }}"
