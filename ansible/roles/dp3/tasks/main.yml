@@ -4,3 +4,7 @@
 
 - name: Configure DP3
   ansible.builtin.import_tasks: ./dp3/configure_dp3.yml
+
+- name: Register that DP3 is installed and configured
+  ansible.builtin.set_fact:
+    dp3_role_has_run_already: true
