@@ -1,0 +1,14 @@
+---
+- name: Remove nemea_adict if enabled
+  ansible.builtin.include_role:
+    name: nemea_adict_remove
+
+- name: Remove dp3 if enabled
+  ansible.builtin.include_role:
+    name: dp3_remove
+
+- name: Remove PANDDA GUI package if enabled
+  ansible.builtin.dnf:
+    name: pandda_gui
+    state: absent
+    autoremove: false

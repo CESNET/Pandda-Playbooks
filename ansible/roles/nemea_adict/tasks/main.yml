@@ -32,14 +32,14 @@
     mode: "0644"
   tags: configure
 
+  # creates:
+  #   - /etc/nemea_adict/prefix_filter_single
+  #   - /etc/nemea_adict/prefix_filter_bi
+  #   - /etc/nemea_adict/prefixes.conf
 - name: Execute adict configuration generator
   ansible.builtin.command:
     cmd: "{{ pandda_conf_executable }} {{ pandda_conf_opt }}/adict_conf.py {{ pandda_conf_path }}/nemea_adict_filters.yml"
-  args:
-    creates:
-      - /etc/nemea_adict/prefix_filter_single
-      - /etc/nemea_adict/prefix_filter_bi
-      - /etc/nemea_adict/prefixes.conf
+  changed_when: true
   tags: configure
 
 - name: Ensure /etc/nemea_adict/recog directory exists
@@ -60,24 +60,12 @@
     mode: '0644'
   tags: configure
 
-- name: Enable NEMEA module groups
-  ansible.builtin.command: supen -d {{ item }} -g {{ item }}
-  changed_when: true
-  with_items:
-    - adict_prefix_filter
-    - adict_ip_activity
-    - adict_open_ports
-    - adict_recog
+- name: Disable modules
+  ansible.builtin.include_tasks: disable.yml
+  when: disable_adict
   tags: configure
 
-- name: Apply changes in supervisor configuration
-  ansible.builtin.command: "{{ item }}"
-  changed_when: true
-  loop:
-    - "supervisorctl reread"
-    - "supervisorctl update"
-    - "supervisorctl start adict_prefix_filter:"
-    - "supervisorctl start adict_ip_activity:"
-    - "supervisorctl start adict_open_ports:"
-    - "supervisorctl start adict_recog:"
+- name: Enable modules
+  ansible.builtin.include_tasks: enable.yml
+  when: enable_adict
   tags: configure

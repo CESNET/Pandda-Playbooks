@@ -5,6 +5,18 @@
     update_cache: true
   tags: install
 
+- name: Ensure configuration directories exists
+  ansible.builtin.file:
+    path: /etc/{{ item }}
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  with_items:
+    - nginx/
+    - nginx/default.d/
+  tags: configure
+
 - name: Copy configuration
   ansible.builtin.template:
     src: files/{{ item }}
@@ -28,36 +40,12 @@
   ansible.builtin.import_tasks: generate_certs.yml
   tags: configure
 
-- name: Restart and enable nginx service
-  ansible.builtin.service:
-    name: nginx
-    state: restarted
-    enabled: true
-  tags: install
+- name: Disable firewall and nginx
+  ansible.builtin.include_tasks: disable.yml
+  tags: configure
+  when: disable_adict
 
-- name: Ensure firewalld is not masked, enabled and running
-  ansible.builtin.systemd:
-    name: firewalld
-    masked: false
-    enabled: true
-    state: started
-  tags: install
-
-- name: Open port 80/tcp
-  ansible.posix.firewalld:
-    port: 80/tcp
-    permanent: true
-    state: enabled
-  tags: install
-
-- name: Open port 443/tcp
-  ansible.posix.firewalld:
-    port: 443/tcp
-    permanent: true
-    state: enabled
-  tags: install
-
-- name: Reload firewalld
-  ansible.builtin.command: firewall-cmd --reload
-  changed_when: true
-  tags: install
+- name: Enable firewall and nginx
+  ansible.builtin.include_tasks: enable.yml
+  tags: configure
+  when: enable_adict

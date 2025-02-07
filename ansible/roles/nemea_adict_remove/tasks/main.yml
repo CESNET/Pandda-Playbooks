@@ -1,0 +1,49 @@
+---
+- name: Stop modules in supervisor
+  ansible.builtin.command: "{{ item }}"
+  changed_when: true
+  loop:
+    - "supervisorctl stop adict_prefix_filter:"
+    - "supervisorctl stop adict_ip_activity:"
+    - "supervisorctl stop adict_open_ports:"
+    - "supervisorctl stop adict_recog:"
+  tags: uninstall
+  failed_when: false
+
+- name: Disable NEMEA module groups
+  ansible.builtin.command: supdis -g {{ item }}
+  changed_when: true
+  with_items:
+    - adict_prefix_filter
+    - adict_ip_activity
+    - adict_open_ports
+    - adict_recog
+  tags: uninstall
+  failed_when: false
+
+- name: Apply changes in supervisor configuration
+  ansible.builtin.command: "{{ item }}"
+  changed_when: true
+  tags: uninstall
+  loop:
+    - "supervisorctl reread"
+    - "supervisorctl update"
+
+- name: Remove /etc/nemea_adict/recog/ directory
+  ansible.builtin.file:
+    name: /etc/nemea_adict/recog/
+    state: absent
+  tags: uninstall
+
+- name: Remove /etc/nemea_adict configuration
+  ansible.builtin.file:
+    name: /etc/nemea_adict/
+    state: absent
+  tags: uninstall
+
+- name: Remove NEMEA ADiCT package
+  ansible.builtin.dnf:
+    name: nemea-adict
+    autoremove: false
+    state: absent
+  tags: uninstall

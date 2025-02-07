@@ -1,0 +1,34 @@
+---
+- name: Restart and enable nginx service
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+    enabled: true
+  tags: install
+
+- name: Ensure firewalld is not masked, enabled and running
+  ansible.builtin.systemd:
+    name: firewalld
+    masked: false
+    enabled: true
+    state: started
+  tags: install
+
+- name: Open port 80/tcp
+  ansible.posix.firewalld:
+    port: 80/tcp
+    permanent: true
+    state: enabled
+  tags: install
+
+- name: Open port 443/tcp
+  ansible.posix.firewalld:
+    port: 443/tcp
+    permanent: true
+    state: enabled
+  tags: install
+
+- name: Reload firewalld
+  ansible.builtin.command: firewall-cmd --reload
+  changed_when: true
+  tags: install

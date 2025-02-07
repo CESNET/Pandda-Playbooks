@@ -28,8 +28,18 @@
   ansible.builtin.systemd:
     daemon_reload: true
 
+- name: Disable MongoDB container
+  ansible.builtin.systemd:
+    name: mongodb-{{ app_name }}
+    state: stopped
+    enabled: false
+  failed_when: false
+  when: disable_adict
+  tags: configure
+
 - name: Start MongoDB container
   ansible.builtin.systemd:
     name: mongodb-{{ app_name }}
     state: started
     enabled: true
+  when: enable_adict

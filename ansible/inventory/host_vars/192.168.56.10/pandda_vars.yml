@@ -1,0 +1,4 @@
+remove_adict: true
+install_adict: true
+enable_adict: true
+disable_adict: false

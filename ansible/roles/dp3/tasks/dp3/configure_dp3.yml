@@ -78,18 +78,12 @@
   ansible.builtin.systemd:
     daemon_reload: true
 
-- name: Start and enable application
-  ansible.builtin.systemd:
-    name: "{{ app_name }}"
-    state: restarted
-    enabled: true
+- name: Stop and disable application
+  ansible.builtin.include_tasks: disable.yml
+  tags: configure
+  when: disable_adict
 
-- name: Ensure application is running
-  community.general.supervisorctl:
-    name: "{{ item }}"
-    state: restarted
-    config: /etc/{{ app_name }}/supervisord.conf
-  with_items:
-    - api
-    - w:worker0
-    - ecl_master
+- name: Start and enable application
+  ansible.builtin.include_tasks: enable.yml
+  tags: configure
+  when: enable_adict

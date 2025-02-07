@@ -1,0 +1,22 @@
+---
+- name: Start and enable redis service
+  ansible.builtin.service:
+    name: redis
+    state: started
+    enabled: true
+
+- name: Start and enable application
+  ansible.builtin.systemd:
+    name: "{{ app_name }}"
+    state: restarted
+    enabled: true
+
+- name: Ensure application is running
+  community.general.supervisorctl:
+    name: "{{ item }}"
+    state: restarted
+    config: /etc/{{ app_name }}/supervisord.conf
+  with_items:
+    - api
+    - w:worker0
+    - ecl_master

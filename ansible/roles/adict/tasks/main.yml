@@ -1,0 +1,8 @@
+---
+- name: Remove ADiCT  when removal is enabled
+  ansible.builtin.include_tasks: remove.yml
+  when: remove_adict
+
+- name: Install ADiCT when installation is enabled
+  ansible.builtin.include_tasks: install.yml
+  when: install_adict
