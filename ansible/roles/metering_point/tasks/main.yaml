@@ -1,4 +1,21 @@
 ---
+- name: Load pandda configuration from file
+  ansible.builtin.set_fact:
+    pandda_config: "{{ lookup('file', inventory_dir + '/host_files/' + inventory_hostname + '/pandda.yaml') | from_yaml }}"
+
+- name: Determine if any probe uses DPDK
+  ansible.builtin.set_fact:
+    dpdk_probe_found: >-
+      {{
+        pandda_config
+        | selectattr('probes', 'defined')
+        | map(attribute='probes')
+        | flatten
+        | selectattr('input', 'defined')
+        | selectattr('input.type', 'equalto', 'dpdk')
+        | list | length > 0
+      }}
+
 - name: Created metering-point bin directory
   ansible.builtin.file:
     path: /opt/metering-point/bin
@@ -10,18 +27,21 @@
     src: "{{ inventory_dir }}/host_files/{{ inventory_hostname }}/hugepages/"
     dest: /etc/ipfixprobe/
     mode: "0755"
+  when: dpdk_probe_found
 
 - name: DPDK hugepages script is installed
   ansible.builtin.copy:
     src: dpdkhugepages_setup.sh
     dest: /opt/metering-point/bin/dpdkhugepages_setup.sh
     mode: "0755"
+  when: dpdk_probe_found
 
 - name: DPDK hugepages service is configured
   ansible.builtin.copy:
     src: dpdkhugepages.service
     dest: /usr/lib/systemd/system/dpdkhugepages.service
     mode: "0755"
+  when: dpdk_probe_found
 
 - name: Create pandda configuration directory
   ansible.builtin.file:
@@ -89,6 +109,7 @@
     name: dpdkhugepages.service
     state: restarted
     enabled: true
+  when: dpdk_probe_found
 
 - name: Start ipfixprobe instances
   ansible.builtin.systemd:
