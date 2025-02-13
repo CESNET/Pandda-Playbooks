@@ -1,0 +1,46 @@
+- probes:
+    - instance_name: raw_eth0
+      input:
+        type: raw
+        ifc: eth0
+        blocks: 8
+        pkts: 16
+      cache:
+        size: 23
+        active_timeout: 300
+        inactive_timeout: 65
+      plugins:
+        - basicplus
+        - tls
+        - vlan
+        - pstats: [includezeroes, skipdup]
+      output:
+        link: true
+        dir: false
+        host: 192.168.56.10
+        port: 4739
+        udp: true
+        template_refresh_rate: 60
+
+    - instance_name: raw_eth1
+      input:
+        type: raw
+        ifc: eth1
+        blocks: 8
+        pkts: 16
+      cache:
+        size: 23
+        active_timeout: 300
+        inactive_timeout: 65
+      plugins:
+        - basicplus
+        - tls
+        - vlan
+        - pstats: [includezeroes, skipdup]
+      output:
+        link: true
+        dir: false
+        host: 192.168.56.10
+        port: 4739
+        udp: true
+        template_refresh_rate: 60
