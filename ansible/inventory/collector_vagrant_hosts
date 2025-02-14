@@ -1,2 +1,5 @@
 [collector]
 #192.168.56.10 ansible_become=yes ansible_become_method=sudo
+
+[metering_point]
+#192.168.56.11 ansible_become=yes ansible_become_method=sudo
