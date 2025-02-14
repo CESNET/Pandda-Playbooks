@@ -1,5 +1,4 @@
 import sys
-import os
 import typing
 
 import bcrypt
@@ -11,10 +10,10 @@ def generate_htpasswd_content(config: dict, output_file: typing.TextIO):
     """Generates htpasswd file content based on supplied central configuration file
 
     Args:
-        config (dict): Central configuration file
+        config (dict): User configuration
         output_file (TextIO): Output file handle
     """
-    for user in config["users"]:
+    for user in config:
         # Data from config
         username = user["username"]
         password = user["password"]
@@ -32,8 +31,9 @@ if __name__ == "__main__":
         "-c",
         "--config",
         dest="config",
-        default="/etc/pandda.d/pandda.yaml",
-        help="configuration file containing user settings",
+        help="configuration string containing user settings",
+        required=True,
+        type=str,
     )
     parser.add_argument(
         "-f",
@@ -43,26 +43,13 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    # Load central config
-    adict_config = None
-    if os.path.exists(args.config):
-        with open(args.config, "r") as f:
-            pandda_config = yaml.safe_load(f)
-        for sub_config in pandda_config:
-            if "adict" in sub_config:
-                adict_config = sub_config["adict"]
-                break
-        else:
-            print("ADiCT section missing in the configuration file", file=sys.stderr)
-            exit(1)
-    else:
-        print(f"Configuration file {args.config} not found", file=sys.stderr)
-        exit(1)
+    # Load configuration
+    users_config = yaml.safe_load(args.config)
 
     # Generate htpasswd
     with open(args.file, "w") as f:
         try:
-            htpasswd_content = generate_htpasswd_content(adict_config, f)
+            htpasswd_content = generate_htpasswd_content(users_config, f)
         except KeyError as e:
             print(f"Key missing in the configuration file: {e}", file=sys.stderr)
             exit(1)

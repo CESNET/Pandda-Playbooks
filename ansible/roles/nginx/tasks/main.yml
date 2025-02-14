@@ -32,7 +32,11 @@
 
 - name: Execute basic HTTP auth configuration generator
   ansible.builtin.command:
-    cmd: "{{ pandda_conf_executable }} {{ pandda_conf_opt }}/adict_basic_auth_conf.py -f {{ pandda_conf_path }}adict.htpasswd"
+    cmd: >
+      {{ pandda_conf_executable }} {{ pandda_conf_opt }}/adict_basic_auth_conf.py
+      --config '[{username: {{ adict_gui_user }}, password: {{ adict_gui_pass }}}]'
+      --file {{ pandda_conf_path }}adict.htpasswd
+  no_log: true
   changed_when: true
   tags: configure
 
