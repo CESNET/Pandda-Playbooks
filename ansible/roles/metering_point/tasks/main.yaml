@@ -11,8 +11,10 @@
         | selectattr('probes', 'defined')
         | map(attribute='probes')
         | flatten
-        | selectattr('input', 'defined')
-        | selectattr('input.type', 'equalto', 'dpdk')
+        | selectattr('input_plugin', 'defined')
+        | map(attribute='input_plugin')
+        | selectattr('dpdk', 'defined')
+        | flatten
         | list | length > 0
       }}
 
@@ -74,15 +76,14 @@
     cmd: >
       {{ pandda_conf_executable }} {{ pandda_conf_opt }}/ipfixprobe_conf.py
       {{ pandda_conf_path }}pandda.yaml
-      /opt/pandda/instance_ipfixprobe.conf.j2
       /etc/ipfixprobe
 
 - name: Detect ipfixprobe instances
   ansible.builtin.shell: |
-    for i in /etc/ipfixprobe/*_*.conf; do
+    for i in /etc/ipfixprobe/*_*.yaml; do
       if [ -e "$i" ]; then
         instance="${i#*_}";
-        echo "${instance%.conf}";
+        echo "${instance%.yaml}";
       fi
     done
   register: ipfixprobe_instances
