@@ -80,10 +80,10 @@
 
 - name: Detect ipfixprobe instances
   ansible.builtin.shell: |
-    for i in /etc/ipfixprobe/*_*.yaml; do
+    for i in /etc/ipfixprobe/*_*.conf; do
       if [ -e "$i" ]; then
         instance="${i#*_}";
-        echo "${instance%.yaml}";
+        echo "${instance%.conf}";
       fi
     done
   register: ipfixprobe_instances

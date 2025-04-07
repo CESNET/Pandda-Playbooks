@@ -31,7 +31,7 @@ def main():
 
     for probe in probes:
         instance_name = probe.get('instance_name', 'unknown')
-        output_filename = f"instance_{instance_name}.yaml"
+        output_filename = f"instance_{instance_name}.conf"
         output_path = os.path.join(output_dir, output_filename)
         del probe['instance_name']
         with open(output_path, 'w') as out_f:
