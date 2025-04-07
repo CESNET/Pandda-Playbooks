@@ -8,8 +8,3 @@
     protected_prefixes:
       - 192.168.100.0/24
       - 192.168.101.0/24
-    users:
-      - username: admin
-        password: admin
-      - username: local
-        password: local
