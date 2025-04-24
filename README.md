@@ -89,3 +89,23 @@ To modify the configuration of an existing machine, you need to edit the pandda 
 
 The PANDDA GUI with available asset management will be accessible at `http://localhost:8000` and `https://localhost:8001`.  
 
+
+### Acknowledgement
+
+<div>
+Supported as part of financial support to third parties (FSTP) within the project National Coordination Center in the Czech Republic (NCC-CZ, project no. 101127941) co-financed by the Digital Europe program.
+</div>
+
+<br>
+
+<div align="center">
+<picture>
+  <img src="https://raw.githubusercontent.com/CESNET/Pandda-Playbooks/refs/heads/main/doc/img/eccc_badge.png?raw=true" width="150">
+</picture>
+<picture>
+  <img src="https://raw.githubusercontent.com/CESNET/Pandda-Playbooks/refs/heads/main/doc/img/ncc_badge.png?raw=true" width="165">
+</picture>
+<picture>
+  <img src="https://raw.githubusercontent.com/CESNET/Pandda-Playbooks/refs/heads/main/doc/img/eu-badge.png?raw=true" width="200">
+</picture>
+</div>
