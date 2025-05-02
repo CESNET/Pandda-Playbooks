@@ -19,7 +19,7 @@
         dir: 0
         host: 192.168.56.10
         port: 4739
-        udp: true
+        udp: false
         template_refresh_rate: 60
 
     - instance_name: raw_eth1
@@ -42,5 +42,5 @@
         dir: 0
         host: 192.168.56.10
         port: 4739
-        udp: true
+        udp: false
         template_refresh_rate: 60
