@@ -15,8 +15,8 @@
         - vlan
         - pstats: [includezeroes, skipdup]
       output:
-        link: true
-        dir: false
+        link: 1
+        dir: 0
         host: 192.168.56.10
         port: 4739
         udp: true
@@ -38,8 +38,8 @@
         - vlan
         - pstats: [includezeroes, skipdup]
       output:
-        link: true
-        dir: false
+        link: 1
+        dir: 0
         host: 192.168.56.10
         port: 4739
         udp: true
