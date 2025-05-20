@@ -1,5 +1,5 @@
 ---
-- name: ipfixprobe repository is installed
+- name: Ipfixprobe repository is installed
   ansible.builtin.yum_repository:
     name: copr:copr.fedorainfracloud.org:group_CESNET:ipfixprobe
     description: Copr repo for ipfixprobe owned by @CESNET
