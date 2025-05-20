@@ -1,3 +1,3 @@
 ---
 dependencies:
-  - role: repository_nemea_stable
+  - role: repository_ipfixprobe

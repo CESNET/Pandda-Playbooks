@@ -1,6 +1,9 @@
 ---
 - name: Package ipfixprobe dpdk is installed
   ansible.builtin.dnf:
-    name: ipfixprobe-dpdk
+    name: "{{ item }}"
     state: latest # noqa package-latest
     update_cache: true
+  loop:
+    - "ipfixprobe"
+    - "ipfixprobe-input-dpdk"
