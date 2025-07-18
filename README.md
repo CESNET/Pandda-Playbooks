@@ -34,6 +34,11 @@ Example configuration:
       - username: admin # <-- Initial GUI username
         password: admin # <-- Initial GUI password. Change it immediately after installation!
 ```
+#### Changing password 
+* Log in to server:
+* Run `htpasswd /etc/pandda.d/adict.htpasswd {username}`. This command adds a user or modifies password of an existing user `{username}`
+* Enter password
+
 
 ## Measurement Point  
 For measurement, we use the `ipfixprobe` exporter. For detailed documentation, please refer to [ipfixprobe](https://github.com/cesnet/ipfixprobe).  
