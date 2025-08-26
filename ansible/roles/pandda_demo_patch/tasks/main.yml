@@ -1,0 +1,28 @@
+- name: Override /opt/adict/config/snapshots.yml
+  ansible.builtin.copy:
+    src: "snapshots.yml"
+    dest: /opt/adict/config/snapshots.yml
+    mode: "0644"
+  tags:
+    - install
+    - configure
+
+- name: Override /etc/supervisord.d/configs/adict_ip_activity/ip_activity.ini
+  ansible.builtin.copy:
+    src: "ip_activity.ini"
+    dest: /etc/supervisord.d/configs/adict_ip_activity/ip_activity.ini
+    mode: "0644"
+  tags:
+    - install
+    - configure
+
+- name: Reread configuration and restart supervisord ip_activity group
+  ansible.builtin.command: "{{ item }}"
+  changed_when: true
+  loop:
+    - "supervisorctl reread"
+    - "supervisorctl update"
+    - "supervisorctl restart adict_ip_activity:*"
+  tags:
+    - install
+    - configure

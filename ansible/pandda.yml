@@ -15,4 +15,5 @@
     - common_tools
     - nemea_collector
     - adict
+    - pandda_demo_patch
     - supervisor_restart
