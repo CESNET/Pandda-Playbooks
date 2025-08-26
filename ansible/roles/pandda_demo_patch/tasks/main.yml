@@ -7,6 +7,15 @@
     - install
     - configure
 
+- name: Override /opt/adict/config/db_entities/ip.yml
+  ansible.builtin.copy:
+    src: "ip.yml"
+    dest: /opt/adict/config/db_entities/ip.yml
+    mode: "0644"
+  tags:
+    - install
+    - configure
+
 - name: Restart ADiCT service
   ansible.builtin.command: "systemctl restart adict"
   tags:
