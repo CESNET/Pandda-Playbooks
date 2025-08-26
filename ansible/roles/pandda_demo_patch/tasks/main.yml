@@ -7,22 +7,14 @@
     - install
     - configure
 
-- name: Override /etc/supervisord.d/configs/adict_ip_activity/ip_activity.ini
-  ansible.builtin.copy:
-    src: "ip_activity.ini"
-    dest: /etc/supervisord.d/configs/adict_ip_activity/ip_activity.ini
-    mode: "0644"
+- name: Restart ADiCT service
+  ansible.builtin.command: "systemctl restart adict"
   tags:
     - install
     - configure
 
-- name: Reread configuration and restart supervisord ip_activity group
-  ansible.builtin.command: "{{ item }}"
-  changed_when: true
-  loop:
-    - "supervisorctl reread"
-    - "supervisorctl update"
-    - "supervisorctl restart adict_ip_activity:*"
+- name: Restart ADiCT supervisor modules
+  ansible.builtin.command: "adictctl restart all"
   tags:
     - install
     - configure
