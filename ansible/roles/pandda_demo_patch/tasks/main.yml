@@ -36,3 +36,9 @@
   tags:
       - install
       - configure
+
+- name: Restart ipfixprobe
+  ansible.builtin.command: "systemctl restart 'ipfixprobe@*'"
+  tags:
+    - install
+    - configure
