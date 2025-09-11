@@ -27,3 +27,12 @@
   tags:
     - install
     - configure
+
+- name: Patch /usr/lib64/ipfixprobe/config2args.py
+  ansible.builtin.copy:
+    src: "config2args.py"
+    dest: /usr/lib64/ipfixprobe/config2args.py
+    mode: "0755"
+    tags:
+      - install
+      - configure
