@@ -34,11 +34,31 @@
     dest: /usr/lib64/ipfixprobe/config2args.py
     mode: "0755"
   tags:
-      - install
-      - configure
+    - install
+    - configure
 
 - name: Restart ipfixprobe
   ansible.builtin.command: "systemctl restart 'ipfixprobe@*'"
+  tags:
+    - install
+    - configure
+
+- name: Remove pandda_gui package
+  ansible.builtin.command: "dnf remove -y pandda_gui"
+  tags:
+    - install
+    - configure
+
+- name: Copy patched pandda_gui package
+  ansible.builtin.copy:
+    src: "pandda_gui-0.5.1-Linux.rpm"
+    dest: /tmp
+  tags:
+    - install
+    - configure
+
+- name: Install patched pandda_gui package
+  ansible.builtin.command: "rpm -i /tmp/pandda_gui-0.5.1-Linux.rpm"
   tags:
     - install
     - configure
